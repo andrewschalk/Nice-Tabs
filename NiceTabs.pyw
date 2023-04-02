@@ -15,6 +15,7 @@ import time
 import os,sys
 from selenium.webdriver.chrome.service import Service
 from subprocess import CREATE_NO_WINDOW
+import traceback
 
 """ Nice Tabs
 This program allows a user to convert an Ultimate Guitar webpage containing a tab to a clean printable PDF.
@@ -25,13 +26,10 @@ Utilizing the dark Azure theme for tkk, a simple GUI is displayed.
 Copyright 2023 Andrew Schalk
 """
 
-#GUI user options
-generateTex = IntVar()
-
 #Events for threads
 loadingEvent = Event()
 loadingEvent2 = Event()
-isConverting = False
+isConverting = False#False when application is idle, True when converting
 
 #os.chdir(sys._MEIPASS)#Uncomment for .exe deployment
 
@@ -44,6 +42,9 @@ def GUI():
     window.tk.call("set_theme", "dark")
     window.geometry('600x240')
     window.title('Nice Tabs')
+
+    #GUI user options
+    generateTex = IntVar()
 
     #Instantiate elements
     greeting = ttk.Label(text="Paste an ultimate guitar link in the box and hit \"Create\" to create and save a tab as a PDF.\n\n Example: https://tabs.ultimate-guitar.com/tab/darius-rucker/wagon-wheel-chords-1215756\n")
@@ -60,6 +61,7 @@ def GUI():
     button.pack()
     check.pack()
 
+
     window.mainloop()#Create window
 
 def tabConverter():
@@ -69,27 +71,33 @@ def tabConverter():
     The user is then prompted for where to save the file and the file is saved.
     """
     global isConverting, savedLabel
-    loadingEvent2.clear()
+
+    loadingEvent2.clear()#Nothing is loading anymore so clear any loading animation
     loadingEvent.clear()
     try:
-        try:
+        try:#Clear last user message if not yet cleared
             savedLabel.pack_forget()
         except:
             pass
-        isConverting = True
+
+        isConverting = True#We are no longer idle
         threading.Thread(target=loadingBar,args=('Downloading webpage',loadingEvent2)).start()
-        if 'tabs.ultimate-guitar.com' not in entry.get():
+
+        if 'tabs.ultimate-guitar.com' not in entry.get():#If not ultimate guitar website
             loadingEvent.set()
             loadingEvent2.set()
             messagebox.showinfo("Issue!","The URL must link to an Ultimate Guitar site.")
             isConverting = False
             return
+        
         URL = entry.get()
         options = webdriver.ChromeOptions()
         options.add_argument('--ignore-certificate-errors')
         options.add_argument('--headless')
         options.add_argument('--ignore-ssl-errors')
         options.add_argument("--window-size=1920,1200")
+
+        #Don't download unnecessary GUI data
         prefs = {"profile.managed_default_content_settings.images":2,
          "profile.default_content_setting_values.notifications":2,
          "profile.managed_default_content_settings.stylesheets":2,
@@ -106,7 +114,8 @@ def tabConverter():
         chromeService = Service('chromedriver.exe')
         chromeService.creation_flags = CREATE_NO_WINDOW
         driver = webdriver.Chrome(options=options, service=chromeService)
-        try:
+
+        try:#Let's try to contact the given webpage.
             driver.get(URL)
         except:
             messagebox.showinfo("Issue!","Something is wrong with the URL you entered.")
@@ -114,11 +123,13 @@ def tabConverter():
             driver.quit()
             isConverting = False
             return
+        
         loadingEvent2.set()
         threading.Thread(target=loadingBar,args=('Generating file',loadingEvent)).start()
+
         soup = BeautifulSoup(driver.page_source, "html.parser")
-        driver.quit()
-        job_elements = soup.find_all("span", class_="y68er")
+        driver.quit()#We've downloaded all needed data, close driver
+        job_elements = soup.find_all("span", class_="y68er")#Each line of tab is one of these
         title = soup.find("h1",class_="dUjZr")
         artist = soup.find("a",class_="aPPf7 fcGj5")
 
@@ -130,6 +141,7 @@ def tabConverter():
         doc.preamble.append(Package('needspace'))
         doc.preamble.append(Package('courier'))
         doc.preamble.append(NoEscape('\\renewcommand*\\familydefault{\\ttdefault}'))
+
         try:
             doc.append(NoEscape('\\begin{center}\\begin{large}'+title.text.replace('Chords','').replace('Tab','')+'\\end{large}\\\\by '+artist.text+'\\end{center}\\vspace{1em}'))
         except:
@@ -139,6 +151,7 @@ def tabConverter():
             return
 
         for job_element in job_elements:
+            """"This is all the formatting for the lines of the tab. This determines how each line is placed"""
             if len(job_element.text) <4:
                 doc.append(NoEscape('\\vspace{1em}'))
             else:
@@ -151,11 +164,12 @@ def tabConverter():
                         doc.append(NoEscape('\\par\\needspace{\\baselineskip}'))
                         doc.append(NoEscape('\\vspace{.6em}'))
                 doc.append(NoEscape(job_element.text.replace('\\','\\textbackslash').replace(' ','\space ').replace('#','\\#').replace('_','\\_').replace('-','-{}')))
+
         loadingEvent.set()
         file = asksaveasfilename(defaultextension = '.pdf',initialfile=title.text,filetypes=[("PDF Doc", "*.pdf")])
-        print(file)
-        if file:
-            try:
+
+        if file:#If user selected a file path
+            try:#Will usually fail if LaTeX compiler failed. Could also fail if saveas path is wrong.
                 loadingEvent.clear()
                 threading.Thread(target=loadingBar,args=('Rendering and saving file',loadingEvent)).start()
                 doc.generate_pdf(file.replace('.pdf',''),clean_tex=generateTex.get(),compiler='pdflatex')
@@ -163,13 +177,14 @@ def tabConverter():
                 threading.Thread(target=saved).start()
             except:
                 loadingEvent.set()
-                messagebox.showerror("Error","Something went wrong trying to render PDF. \nThere may be something wrong with how this program interprets the given tab.")
+                messagebox.showerror("Error","Something went wrong trying to render or save PDF. \nThere may be something wrong with how this program interprets the given tab.")
         else:
             messagebox.showinfo("File Not Saved","Please select a file location. Click \"Create\" again to select location.")
             loadingEvent.set()
-        isConverting = False
-    except Exception as e:
-        messagebox.showerror("Error!","Something went wrong!\n"+str(e))
+
+        isConverting = False#We're done converting; back to idle.
+    except:#If anything unexpected happens, throw error window with stacktrace
+        messagebox.showerror("Error!","Something went wrong!\n"+traceback.format_exc())
         loadingEvent.set()
         driver.quit()
         isConverting = False
@@ -179,7 +194,6 @@ def runConverterAsThread():
     """Creates a new thread to run the conversion process in."""
     if not isConverting:#Only start conversion if idle
         threading.Thread(target=tabConverter).start()
-        loadingEvent.clear()#Nothing is loading anymore so clear any loading animation
 
 def saved():
     """Creates text at bottom of window telling user that file was saved. Disappears after 10 seconds"""
