@@ -24,6 +24,13 @@ The data are formatted and sent to a LaTeX compiler which creates the PDF.
 Utilizing the Azure dark theme for tkk, a simple GUI is displayed.
 
 Copyright 2023 Andrew Schalk
+
+         /\  __
+        /--\/  \
+       /    \__
+               \
+            \__/
+      
 """
 
 #Events for threads
