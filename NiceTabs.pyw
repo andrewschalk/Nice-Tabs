@@ -36,12 +36,26 @@ isConverting = False#False when application is idle, True when converting
 
 def GUI():
     """Creates the window that contains the GUI and its components. Uses tkk with Azure dark theme."""
-    #Initialize window
+    global generateTex,entry,window
+    width = 600
+    height = 240
+
     window = tk.Tk()
+
+    # get screen width and height
+    ws = window.winfo_screenwidth()
+    hs = window.winfo_screenheight()
+
+    # calculate x and y coordinates for the Tk window
+    x = (ws/2) - (width/2)
+    y = (hs/2) - (height/2)
+
+    #Initialize window
     window.tk.call('source', './Azure/azure.tcl')
     window.tk.call("set_theme", "dark")
-    window.geometry('600x240')
+    window.geometry('%dx%d+%d+%d' % (width, height, x, y))
     window.title('Nice Tabs')
+    window.resizable(False,False)
 
     #GUI user options
     generateTex = IntVar()
@@ -50,6 +64,7 @@ def GUI():
     greeting = ttk.Label(text="Paste an ultimate guitar link in the box and hit \"Create\" to create and save a tab as a PDF.\n\n Example: https://tabs.ultimate-guitar.com/tab/darius-rucker/wagon-wheel-chords-1215756\n")
     button = ttk.Button(text="Create",command=runConverterAsThread)
     entry = ttk.Entry(width=80)
+    entry.bind('<Return>',runConverterAsThread)
     check = ttk.Checkbutton(text='Generate .tex file',variable=generateTex,onvalue=False,offvalue=True,)
     check.invoke()#Make sure the box starts unticked
 
@@ -93,7 +108,7 @@ def tabConverter():
         URL = entry.get()
         options = webdriver.ChromeOptions()
         options.add_argument('--ignore-certificate-errors')
-        options.add_argument('--headless')
+        options.add_argument('--headless=new')
         options.add_argument('--ignore-ssl-errors')
         options.add_argument("--window-size=1920,1200")
 
@@ -190,7 +205,7 @@ def tabConverter():
         isConverting = False
         loadingEvent2.set()
 
-def runConverterAsThread():
+def runConverterAsThread(event=None):
     """Creates a new thread to run the conversion process in."""
     if not isConverting:#Only start conversion if idle
         threading.Thread(target=tabConverter).start()
@@ -206,7 +221,7 @@ def saved():
     savedLabel.pack_forget()
 
 def loadingBar(str,event):
-    """Creates a simple loading animation with the given text.
+    """Creates a simple loading animation along with the given text.
     :param str The message to display to the user while they wait.
     :param event The Event object that will be called when loading is finished.
     """
