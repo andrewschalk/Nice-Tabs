@@ -21,7 +21,7 @@ import traceback
 This program allows a user to convert an Ultimate Guitar webpage containing a tab to a clean printable PDF.
 Selenium scrapes the data from the given page and they are processed with Beautiful Soup.
 The data are formatted and sent to a LaTeX compiler which creates the PDF.
-Utilizing the dark Azure theme for tkk, a simple GUI is displayed.
+Utilizing the Azure dark theme for tkk, a simple GUI is displayed.
 
 Copyright 2023 Andrew Schalk
 """
@@ -90,7 +90,7 @@ def tabConverter():
     loadingEvent2.clear()#Nothing is loading anymore so clear any loading animation
     loadingEvent.clear()
     try:
-        try:#Clear last user message if not yet cleared
+        try:#Clear last message to user if not yet cleared
             savedLabel.pack_forget()
         except:
             pass
@@ -107,9 +107,9 @@ def tabConverter():
         
         URL = entry.get()
         options = webdriver.ChromeOptions()
-        options.add_argument('--ignore-certificate-errors')
-        options.add_argument('--headless=new')
+        options.add_argument('--ignore-certificate-errors')#Don't show these errors as we don't care
         options.add_argument('--ignore-ssl-errors')
+        options.add_argument('--headless=new')#Run in headless mode. '=new' fixes massive download time issue
         options.add_argument("--window-size=1920,1200")
 
         #Don't download unnecessary GUI data
@@ -232,7 +232,7 @@ def loadingBar(str,event):
     
     i=0
     dots=''
-    while not event.is_set():#Adds 0 to 3 dots incrementally at the end of the string with a time between them
+    while not event.is_set():#Adds 0 to 3 dots incrementally at the end of the string with a pause between them
         loading.config(text=str+dots)
         time.sleep(waitTime)
         dots=dots+'.'
