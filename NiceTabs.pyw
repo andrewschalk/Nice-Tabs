@@ -20,24 +20,54 @@ from subprocess import CREATE_NO_WINDOW
 This program allows a user to convert an Ultimate Guitar webpage containing a tab to a clean printable PDF.
 Selenium scrapes the data from the given page and they are processed with Beautiful Soup.
 The data are formatted and sent to a LaTeX compiler which creates the PDF.
-Utilizing the Azure theme for tkk, a simple GUI is displayed.
+Utilizing the dark Azure theme for tkk, a simple GUI is displayed.
 
 Copyright 2023 Andrew Schalk
 """
 
-#os.chdir(sys._MEIPASS)#comment out for testing
-window = tk.Tk()
-window.tk.call('source', './Azure/azure.tcl')
-window.tk.call("set_theme", "dark")
-window.geometry('600x240')
-
+#GUI user options
 generateTex = IntVar()
+
+#Events for threads
 loadingEvent = Event()
 loadingEvent2 = Event()
 isConverting = False
-global savedLabel
+
+#os.chdir(sys._MEIPASS)#Uncomment for .exe deployment
+
+
+def GUI():
+    """Creates the window that contains the GUI and its components. Uses tkk with Azure dark theme."""
+    #Initialize window
+    window = tk.Tk()
+    window.tk.call('source', './Azure/azure.tcl')
+    window.tk.call("set_theme", "dark")
+    window.geometry('600x240')
+    window.title('Nice Tabs')
+
+    #Instantiate elements
+    greeting = ttk.Label(text="Paste an ultimate guitar link in the box and hit \"Create\" to create and save a tab as a PDF.\n\n Example: https://tabs.ultimate-guitar.com/tab/darius-rucker/wagon-wheel-chords-1215756\n")
+    button = ttk.Button(text="Create",command=runConverterAsThread)
+    entry = ttk.Entry(width=80)
+    check = ttk.Checkbutton(text='Generate .tex file',variable=generateTex,onvalue=False,offvalue=True,)
+    check.invoke()#Make sure the box starts unticked
+
+    #Pack elements (order matters!)
+    ttk.Label().pack()
+    greeting.pack()
+    entry.pack()
+    ttk.Label().pack()
+    button.pack()
+    check.pack()
+
+    window.mainloop()#Create window
 
 def tabConverter():
+    """Retreives the data and creates a PDF.
+    The data is scraped from the given URL. The data is then packed into a .tex file.
+    The user can choose whether to keep the .tex file, with a checkbox.
+    The user is then prompted for where to save the file and the file is saved.
+    """
     global isConverting, savedLabel
     loadingEvent2.clear()
     loadingEvent.clear()
@@ -146,11 +176,13 @@ def tabConverter():
         loadingEvent2.set()
 
 def runConverterAsThread():
-    loadingEvent.clear()
-    if not isConverting:
+    """Creates a new thread to run the conversion process in."""
+    if not isConverting:#Only start conversion if idle
         threading.Thread(target=tabConverter).start()
+        loadingEvent.clear()#Nothing is loading anymore so clear any loading animation
 
 def saved():
+    """Creates text at bottom of window telling user that file was saved. Disappears after 10 seconds"""
     time.sleep(.2)
     global savedLabel,entry
     entry.delete(0,END)
@@ -160,14 +192,18 @@ def saved():
     savedLabel.pack_forget()
 
 def loadingBar(str,event):
-    time.sleep(.2)
+    """Creates a simple loading animation with the given text.
+    :param str The message to display to the user while they wait.
+    :param event The Event object that will be called when loading is finished.
+    """
+    time.sleep(.2)#Allows for previous message to clear before displaying this one.
     loading = ttk.Label()
     loading.pack()
     waitTime =.3
     
     i=0
     dots=''
-    while not event.is_set():
+    while not event.is_set():#Adds 0 to 3 dots incrementally at the end of the string with a time between them
         loading.config(text=str+dots)
         time.sleep(waitTime)
         dots=dots+'.'
@@ -178,18 +214,4 @@ def loadingBar(str,event):
     loading.pack_forget()
     
 
-window.title('Nice Tabs')
-greeting = ttk.Label(text="Paste an ultimate guitar link in the box and hit \"Create\" to create and save a tab as a PDF.\n\n Example: https://tabs.ultimate-guitar.com/tab/darius-rucker/wagon-wheel-chords-1215756\n")
-
-button = ttk.Button(text="Create",command=runConverterAsThread)
-entry = ttk.Entry(width=80)
-check = ttk.Checkbutton(text='Generate .tex file',variable=generateTex,onvalue=False,offvalue=True,)
-check.invoke()
-ttk.Label().pack()
-greeting.pack()
-entry.pack()
-ttk.Label().pack()
-button.pack()
-
-check.pack()
-window.mainloop()
+GUI()#Create the GUI
