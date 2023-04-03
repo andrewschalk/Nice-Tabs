@@ -109,7 +109,7 @@ def tabConverter():
         if 'tabs.ultimate-guitar.com' not in entry.get():#If not ultimate guitar website
             loadingEvent.set()
             loadingEvent2.set()
-            messagebox.showinfo("Issue!","The URL must link to an Ultimate Guitar site.")
+            messagebox.showinfo("Issue!","The URL must link to an Ultimate Guitar tab or chords page.")
             isConverting = False
             return
         
@@ -193,12 +193,12 @@ def tabConverter():
             try:#Will usually fail if LaTeX compiler failed. Could also fail if saveas path is wrong.
                 loadingEvent.clear()
                 threading.Thread(target=loadingBar,args=('Rendering and saving file',loadingEvent)).start()
-                doc.generate_pdf(file.replace('.pdf',''),clean_tex=generateTex.get(),compiler='pdflatex')
+                doc.generate_pdf(file.replace('.pdf',''),clean_tex=generateTex.get(),compiler='C:/Users/Andrew Schalk/Documents/Programming/Nice-Tabs/venv/Lib/site-packages/pdflatex-0.1.3.dist-info')
                 loadingEvent.set()
                 threading.Thread(target=saved).start()
             except:
                 loadingEvent.set()
-                messagebox.showerror("Error","Something went wrong trying to render or save PDF. \nThere may be something wrong with how this program interprets the given tab.")
+                messagebox.showerror("Error","Something went wrong trying to render or save PDF. \n\n"+traceback.format_exc())
         else:
             messagebox.showinfo("File Not Saved","Please select a file location. Click \"Create\" again to select location.")
             loadingEvent.set()
