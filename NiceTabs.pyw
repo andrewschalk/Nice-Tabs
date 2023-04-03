@@ -151,7 +151,7 @@ def tabConverter():
         soup = BeautifulSoup(driver.page_source, "html.parser")
         driver.quit()#We've downloaded all needed data, close driver
         job_elements = soup.find_all("span", class_="y68er")#Each line of tab is one of these
-        title = soup.find("h1",class_="dUjZr")
+        title = soup.find("h1",class_="dUjZr").text
         artist = soup.find("a",class_="aPPf7 fcGj5")
 
         cf.active = cf.Version1(indent=False)
@@ -164,7 +164,7 @@ def tabConverter():
         doc.preamble.append(NoEscape('\\renewcommand*\\familydefault{\\ttdefault}'))
 
         try:
-            doc.append(NoEscape('\\begin{center}\\begin{large}'+title.text.replace('Chords','').replace('Tab','')+'\\end{large}\\\\by '+artist.text+'\\end{center}\\vspace{1em}'))
+            doc.append(NoEscape('\\begin{center}\\begin{large}'+title.replace('Chords','').replace('Tab','')+'\\end{large}\\\\by '+artist.text+'\\end{center}\\vspace{1em}'))
         except:
             loadingEvent.set()
             messagebox.showinfo("Issue!","Something is wrong with the URL you entered.")
@@ -187,13 +187,14 @@ def tabConverter():
                 doc.append(NoEscape(job_element.text.replace('\\','\\textbackslash').replace(' ','\space ').replace('#','\\#').replace('_','\\_').replace('-','-{}')))
 
         loadingEvent.set()
-        file = asksaveasfilename(defaultextension = '.pdf',initialfile=title.text,filetypes=[("PDF Doc", "*.pdf")])
+        file = asksaveasfilename(defaultextension = '.pdf',initialfile=title,filetypes=[("PDF Doc", "*.pdf")])
 
         if file:#If user selected a file path
             try:#Will usually fail if LaTeX compiler failed. Could also fail if saveas path is wrong.
                 loadingEvent.clear()
                 threading.Thread(target=loadingBar,args=('Rendering and saving file',loadingEvent)).start()
-                doc.generate_pdf(file.replace('.pdf',''),clean_tex=generateTex.get(),compiler='C:/Users/Andrew Schalk/Documents/Programming/Nice-Tabs/venv/Lib/site-packages/pdflatex-0.1.3.dist-info')
+                print(file)
+                doc.generate_pdf(file.replace('.pdf',''),clean_tex=generateTex.get(),compiler='venv/Lib/site-packages/pdflatex-0.1.3.dist-info')
                 loadingEvent.set()
                 threading.Thread(target=saved).start()
             except:
@@ -205,7 +206,7 @@ def tabConverter():
 
         isConverting = False#We're done converting; back to idle.
     except:#If anything unexpected happens, throw error window with stacktrace
-        messagebox.showerror("Error!","Something went wrong!\n"+traceback.format_exc())
+        messagebox.showerror("Error!","Something went wGrong!\n"+traceback.format_exc())
         loadingEvent.set()
         driver.quit()
         isConverting = False
@@ -221,7 +222,7 @@ def saved():
     time.sleep(.2)
     global savedLabel1, entry, savedLabel2
     entry.delete(0,END)
-    savedLabel1 = ttk.Label(text=title.text + ' saved.')
+    savedLabel1 = ttk.Label(text=title + ' saved.')
     savedLabel1.pack()
     savedLabel2 = ttk.Label(text='You may exit the application or continue generating files.')
     savedLabel2.pack()
