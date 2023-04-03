@@ -13,7 +13,8 @@ import threading
 from threading import Event
 import time
 import os,sys
-from selenium.webdriver.chrome.service import Service
+#from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.microsoft import EdgeChromiumDriverManager
 from subprocess import CREATE_NO_WINDOW
 import traceback
 
@@ -83,7 +84,6 @@ def GUI():
     button.pack()
     check.pack()
 
-
     window.mainloop()#Create window
 
 def tabConverter():
@@ -114,7 +114,7 @@ def tabConverter():
             return
         
         URL = entry.get()
-        options = webdriver.ChromeOptions()
+        options = webdriver.EdgeOptions()
         options.add_argument('--ignore-certificate-errors')#Don't show these errors as we don't care
         options.add_argument('--ignore-ssl-errors')
         options.add_argument('--headless=new')#Run in headless mode. '=new' fixes massive download time issue
@@ -134,9 +134,7 @@ def tabConverter():
         options.add_experimental_option("prefs", prefs)
         options.add_experimental_option('excludeSwitches', ['enable-logging'])
 
-        chromeService = Service('chromedriver.exe')
-        chromeService.creation_flags = CREATE_NO_WINDOW
-        driver = webdriver.Chrome(options=options, service=chromeService)
+        driver = webdriver.Edge(EdgeChromiumDriverManager().install(),options=options)
 
         try:#Let's try to contact the given webpage.
             driver.get(URL)
