@@ -45,7 +45,7 @@ def GUI():
     """Creates the window that contains the GUI and its components. Uses tkk with Azure dark theme."""
     global generateTex,entry,window
     width = 600
-    height = 240
+    height = 250
 
     window = tk.Tk()
 
@@ -92,13 +92,14 @@ def tabConverter():
     The user can choose whether to keep the .tex file, with a checkbox.
     The user is then prompted for where to save the file and the file is saved.
     """
-    global isConverting, savedLabel
+    global isConverting, savedLabel1, savedLabel2, title
 
     loadingEvent2.clear()#Nothing is loading anymore so clear any loading animation
     loadingEvent.clear()
     try:
         try:#Clear last message to user if not yet cleared
-            savedLabel.pack_forget()
+            savedLabel1.pack_forget()
+            savedLabel2.pack_forget()
         except:
             pass
 
@@ -220,12 +221,15 @@ def runConverterAsThread(event=None):
 def saved():
     """Creates text at bottom of window telling user that file was saved. Disappears after 10 seconds"""
     time.sleep(.2)
-    global savedLabel,entry
+    global savedLabel1, entry, savedLabel2
     entry.delete(0,END)
-    savedLabel = ttk.Label(text='File saved. You may exit the application or continue generating files.')
-    savedLabel.pack()
+    savedLabel1 = ttk.Label(text=title.text + ' saved.')
+    savedLabel1.pack()
+    savedLabel2 = ttk.Label(text='You may exit the application or continue generating files.')
+    savedLabel2.pack()
     time.sleep(10)
-    savedLabel.pack_forget()
+    savedLabel1.pack_forget()
+    savedLabel2.pack_forget()
 
 def loadingBar(str,event):
     """Creates a simple loading animation along with the given text.
