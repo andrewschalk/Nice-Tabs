@@ -34,86 +34,73 @@ Copyright 2023 Andrew Schalk
             \__/
       
 """
-
-#Events for threads
-loadingEvent  = Event()
-loadingEvent2 = Event()
+global myGUI
 isConverting = False#False when application is idle, True when converting
 
 #os.chdir(sys._MEIPASS)#Uncomment for .exe deployment
 
-
-def GUI():
+class GUI:
     """Creates the window that contains the GUI and its components. Uses tkk with Azure dark theme."""
-    global generateTex,entry,window
-    width  = 600
-    height = 250
+    global entry,button
+    def __init__(self):
+        self.generateTex = False
+        width  = 600
+        height = 250
 
-    window = tk.Tk()
+        window = tk.Tk()
 
-    # get screen width and height
-    ws = window.winfo_screenwidth()
-    hs = window.winfo_screenheight()
+        # get screen width and height
+        ws = window.winfo_screenwidth()
+        hs = window.winfo_screenheight()
 
-    # calculate x and y coordinates for the Tk window
-    x = (ws/2) - (width/2)
-    y = (hs/2) - (height/2)
+        # calculate x and y coordinates for the Tk window
+        x = (ws/2) - (width/2)
+        y = (hs/2) - (height/2)
 
-    #Initialize window
-    window.tk.call('source', './Azure/azure.tcl')
-    window.tk.call("set_theme", "dark")
-    window.geometry('%dx%d+%d+%d' % (width, height, x, y))
-    window.title('Nice Tabs')
-    window.resizable(False,False)
+        #Initialize window
+        window.tk.call('source', './Azure/azure.tcl')
+        window.tk.call("set_theme", "dark")
+        window.geometry('%dx%d+%d+%d' % (width, height, x, y))
+        window.title('Nice Tabs')
+        window.resizable(False,False)
 
-    #GUI user options
-    generateTex = IntVar()
+        #GUI user options
+        generateTex = IntVar()
 
-    #Instantiate elements
-    greeting = ttk.Label(text="Paste an ultimate guitar link in the box and hit \"Create\" to create and save a tab as a PDF.\n\n Example: https://tabs.ultimate-guitar.com/tab/darius-rucker/wagon-wheel-chords-1215756\n")
-    button   = ttk.Button(text="Create",command=runConverterAsThread)
-    entry    = ttk.Entry(width=80)
-    entry.bind('<Return>',runConverterAsThread)
-    check    = ttk.Checkbutton(text='Generate .tex file',variable=generateTex,onvalue=False,offvalue=True,)
-    check.invoke()#Make sure the box starts unticked
+        #Instantiate elements
+        greeting = ttk.Label(text="Paste an ultimate guitar link in the box and hit \"Create\" to create and save a tab as a PDF.\n\n Example: https://tabs.ultimate-guitar.com/tab/darius-rucker/wagon-wheel-chords-1215756\n")
+        self.button   = ttk.Button(text="Create")
+        self.entry    = ttk.Entry(width=80)
+        check    = ttk.Checkbutton(text='Generate .tex file',variable=generateTex,onvalue=False,offvalue=True,)
+        check.invoke()#Make sure the box starts unticked
 
-    #Pack elements (order matters!)
-    ttk.Label().pack()
-    greeting.pack()
-    entry.pack()
-    ttk.Label().pack()
-    button.pack()
-    check.pack()
+        #Pack elements (order matters!)
+        ttk.Label().pack()
+        greeting.pack()
+        self.entry.pack()
+        ttk.Label().pack()
+        self.button.pack()
+        check.pack()
+        window.mainloop()#Create window
 
-    window.mainloop()#Create window
+    def setCommand(self,convertCommand):
+        #self.entry.configure('<Return>',convertCommand)
+        self.button.configure(command=convertCommand)
+        
+    
 
-def tabConverter():
+class TabConverter:
     """Retreives the data and creates a PDF.
     The data is scraped from the given URL. The data is then packed into a .tex file.
     The user can choose whether to keep the .tex file, with a checkbox.
     The user is then prompted for where to save the file and the file is saved.
     """
-    global isConverting, savedLabel1, savedLabel2, title
+    global driver,doc,title,generateTex
 
-    loadingEvent2.clear()#Nothing is loading anymore so clear any loading animation
-    loadingEvent.clear()
-    try:
-        try:#Clear last message to user if not yet cleared
-            savedLabel1.pack_forget()
-            savedLabel2.pack_forget()
-        except:
-            pass
+    def __init__(self):
+        pass
 
-        isConverting = True#We are no longer idle
-        threading.Thread(target=loadingBar,args=('Downloading webpage',loadingEvent2)).start()
-
-        if 'tabs.ultimate-guitar.com' not in entry.get():#If not ultimate guitar website
-            loadingEvent.set()
-            loadingEvent2.set()
-            messagebox.showinfo("Issue!","The URL must link to an Ultimate Guitar tab or chords page.")
-            isConverting = False
-            return
-        
+    def getWebsite():
         URL = entry.get()
 
         options = webdriver.EdgeOptions()
@@ -142,18 +129,14 @@ def tabConverter():
             driver.get(URL)
         except:
             messagebox.showinfo("Issue!","Something is wrong with the URL you entered.")
-            loadingEvent.set()
             driver.quit()
             isConverting = False
             return
-        
-        loadingEvent2.set()
-        threading.Thread(target=loadingBar,args=('Generating file',loadingEvent)).start()
-
+    def processHTML(driver):
         soup = BeautifulSoup(driver.page_source, "html.parser")
         driver.quit()#We've downloaded all needed data, close driver
         tabLines = soup.find_all("span", class_="y68er")#Each line of tab is one of these
-        title  = soup.find("h1",class_="dUjZr")
+        title  = soup.find("h1",class_="dUjZr").text
         artist = soup.find("a",class_="aPPf7 fcGj5")
 
         cf.active = cf.Version1(indent=False)
@@ -168,8 +151,7 @@ def tabConverter():
         try:
             doc.append(NoEscape('\\begin{center}\\begin{large}'+title.replace('Chords','').replace('Tab','')+'\\end{large}\\\\by '+artist.text+'\\end{center}\\vspace{1em}'))
         except:
-            loadingEvent.set()
-            messagebox.showinfo("Issue!","Something is wrong with the URL you entered.")
+            messagebox.showinfo("Issue!","Something may be wrong with the URL you entered. Please try again.")
             isConverting = False
             return
 
@@ -188,36 +170,42 @@ def tabConverter():
                         doc.append(NoEscape('\\vspace{.6em}'))
                 doc.append(NoEscape(tabLine.text.replace('\\','\\textbackslash').replace(' ','\space ').replace('#','\\#').replace('_','\\_').replace('-','-{}')))
 
-        loadingEvent.set()
+    def saveFile():
         file = asksaveasfilename(defaultextension = '.pdf',initialfile=title,filetypes=[("PDF Doc", "*.pdf")])
-
         if file:#If user selected a file path
             try:#Will usually fail if LaTeX compiler failed. Could also fail if saveas path is wrong.
-                loadingEvent.clear()
-                threading.Thread(target=loadingBar,args=('Rendering and saving file',loadingEvent)).start()
-                print(file)
                 doc.generate_pdf(file.replace('.pdf',''),clean_tex=generateTex.get(),compiler='venv/Lib/site-packages/pdflatex-0.1.3.dist-info')
-                loadingEvent.set()
                 threading.Thread(target=saved).start()
             except:
-                loadingEvent.set()
                 messagebox.showerror("Error","Something went wrong trying to render or save PDF. \n\n"+traceback.format_exc())
         else:
             messagebox.showinfo("File Not Saved","Please select a file location. Click \"Create\" again to select location.")
-            loadingEvent.set()
 
-        isConverting = False#We're done converting; back to idle.
-    except:#If anything unexpected happens, throw error window with stacktrace
-        messagebox.showerror("Error!","Something went wGrong!\n"+traceback.format_exc())
-        loadingEvent.set()
-        driver.quit()
-        isConverting = False
-        loadingEvent2.set()
+    def convert(self,generateTex):
+        self.generateTex = generateTex
+        try:
+            isConverting = True#We are no longer idle
+        
+            if 'tabs.ultimate-guitar.com' not in entry.get():#If not ultimate guitar website
+                messagebox.showinfo("Issue!","The URL must link to an Ultimate Guitar tab or chords page.")
+                isConverting = False
+                return
+        
+            self.getWebsite()
+            self.processHTML()
+            self.saveFile()
+            isConverting = False#We're done converting; back to idle.
+        except:#If anything unexpected happens, throw error window with stacktrace
+            messagebox.showerror("Error!","Something went wrong!\n"+traceback.format_exc())
+            print(traceback)
+            driver.quit()
+            isConverting = False
 
 def runConverterAsThread(event=None):
     """Creates a new thread to run the conversion process in."""
+    global myGUI
     if not isConverting:#Only start conversion if idle
-        threading.Thread(target=tabConverter).start()
+        threading.Thread(target=myConverter.convert(myGUI.generateTex)).start()
 
 def saved():
     """Creates text at bottom of window telling user that file was saved. Disappears after 10 seconds"""
@@ -254,5 +242,6 @@ def loadingBar(str,event):
             dots=''
     loading.pack_forget()
     
-
-GUI()#Create the GUI
+myConverter = TabConverter()
+myGUI = GUI()
+myGUI.setCommand(runConverterAsThread)
