@@ -13,7 +13,6 @@ import threading
 from threading import Event
 import time
 import os,sys
-#from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.edge.service import Service as EdgeService
 from webdriver_manager.microsoft import EdgeChromiumDriverManager
 from subprocess import CREATE_NO_WINDOW
@@ -34,15 +33,13 @@ Copyright 2023 Andrew Schalk
             \__/
       
 """
-global myGUI
 isConverting = False#False when application is idle, True when converting
 
 #os.chdir(sys._MEIPASS)#Uncomment for .exe deployment
 
 class GUI:
     """Creates the window that contains the GUI and its components. Uses tkk with Azure dark theme."""
-    global entry,button
-    def __init__(self):
+    def __init__(self,convertCommand):
         self.generateTex = False
         width  = 600
         height = 250
@@ -68,23 +65,26 @@ class GUI:
         generateTex = IntVar()
 
         #Instantiate elements
-        greeting = ttk.Label(text="Paste an ultimate guitar link in the box and hit \"Create\" to create and save a tab as a PDF.\n\n Example: https://tabs.ultimate-guitar.com/tab/darius-rucker/wagon-wheel-chords-1215756\n")
-        self.button   = ttk.Button(text="Create")
-        self.entry    = ttk.Entry(width=80)
-        check    = ttk.Checkbutton(text='Generate .tex file',variable=generateTex,onvalue=False,offvalue=True,)
+        greeting    = ttk.Label(text="Paste an ultimate guitar link in the box and hit \"Create\" to create and save a tab as a PDF.\n\n Example: https://tabs.ultimate-guitar.com/tab/darius-rucker/wagon-wheel-chords-1215756\n")
+        button = ttk.Button(text="Create")
+        button.configure(command=convertCommand)
+        entry  = ttk.Entry(width=80)
+        entry.configure('<Return>',convertCommand)
+        check       = ttk.Checkbutton(text='Generate .tex file',variable=generateTex,onvalue=False,offvalue=True,)
         check.invoke()#Make sure the box starts unticked
 
         #Pack elements (order matters!)
         ttk.Label().pack()
         greeting.pack()
-        self.entry.pack()
+        entry.pack()
         ttk.Label().pack()
-        self.button.pack()
+        button.pack()
         check.pack()
         window.mainloop()#Create window
 
     def setCommand(self,convertCommand):
         #self.entry.configure('<Return>',convertCommand)
+        print(self.button)
         self.button.configure(command=convertCommand)
         
     
@@ -92,7 +92,7 @@ class GUI:
 class TabConverter:
     """Retreives the data and creates a PDF.
     The data is scraped from the given URL. The data is then packed into a .tex file.
-    The user can choose whether to keep the .tex file, with a checkbox.
+    The user can choose whether to keep the .tex file using a checkbox.
     The user is then prompted for where to save the file and the file is saved.
     """
     global driver,doc,title,generateTex
@@ -243,5 +243,5 @@ def loadingBar(str,event):
     loading.pack_forget()
     
 myConverter = TabConverter()
-myGUI = GUI()
-myGUI.setCommand(runConverterAsThread)
+myGUI = GUI(runConverterAsThread)
+#myGUI.setCommand(runConverterAsThread)
