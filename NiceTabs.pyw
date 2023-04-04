@@ -14,6 +14,7 @@ from threading import Event
 import time
 import os,sys
 #from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.edge.service import Service as EdgeService
 from webdriver_manager.microsoft import EdgeChromiumDriverManager
 from subprocess import CREATE_NO_WINDOW
 import traceback
@@ -35,7 +36,7 @@ Copyright 2023 Andrew Schalk
 """
 
 #Events for threads
-loadingEvent = Event()
+loadingEvent  = Event()
 loadingEvent2 = Event()
 isConverting = False#False when application is idle, True when converting
 
@@ -45,7 +46,7 @@ isConverting = False#False when application is idle, True when converting
 def GUI():
     """Creates the window that contains the GUI and its components. Uses tkk with Azure dark theme."""
     global generateTex,entry,window
-    width = 600
+    width  = 600
     height = 250
 
     window = tk.Tk()
@@ -70,10 +71,10 @@ def GUI():
 
     #Instantiate elements
     greeting = ttk.Label(text="Paste an ultimate guitar link in the box and hit \"Create\" to create and save a tab as a PDF.\n\n Example: https://tabs.ultimate-guitar.com/tab/darius-rucker/wagon-wheel-chords-1215756\n")
-    button = ttk.Button(text="Create",command=runConverterAsThread)
-    entry = ttk.Entry(width=80)
+    button   = ttk.Button(text="Create",command=runConverterAsThread)
+    entry    = ttk.Entry(width=80)
     entry.bind('<Return>',runConverterAsThread)
-    check = ttk.Checkbutton(text='Generate .tex file',variable=generateTex,onvalue=False,offvalue=True,)
+    check    = ttk.Checkbutton(text='Generate .tex file',variable=generateTex,onvalue=False,offvalue=True,)
     check.invoke()#Make sure the box starts unticked
 
     #Pack elements (order matters!)
@@ -114,6 +115,7 @@ def tabConverter():
             return
         
         URL = entry.get()
+
         options = webdriver.EdgeOptions()
         options.add_argument('--ignore-certificate-errors')#Don't show these errors as we don't care
         options.add_argument('--ignore-ssl-errors')
@@ -134,7 +136,7 @@ def tabConverter():
         options.add_experimental_option("prefs", prefs)
         options.add_experimental_option('excludeSwitches', ['enable-logging'])
 
-        driver = webdriver.Edge(EdgeChromiumDriverManager().install(),options=options)
+        driver = webdriver.Edge(service=EdgeService(EdgeChromiumDriverManager().install()),options=options)
 
         try:#Let's try to contact the given webpage.
             driver.get(URL)
@@ -150,8 +152,8 @@ def tabConverter():
 
         soup = BeautifulSoup(driver.page_source, "html.parser")
         driver.quit()#We've downloaded all needed data, close driver
-        job_elements = soup.find_all("span", class_="y68er")#Each line of tab is one of these
-        title = soup.find("h1",class_="dUjZr")
+        tabLines = soup.find_all("span", class_="y68er")#Each line of tab is one of these
+        title  = soup.find("h1",class_="dUjZr")
         artist = soup.find("a",class_="aPPf7 fcGj5")
 
         cf.active = cf.Version1(indent=False)
@@ -171,20 +173,20 @@ def tabConverter():
             isConverting = False
             return
 
-        for job_element in job_elements:
+        for tabLine in tabLines:
             """"This is all the formatting for the lines of the tab. This determines how each line is placed"""
-            if len(job_element.text) <4:
+            if len(tabLine.text) <4:
                 doc.append(NoEscape('\\vspace{1em}'))
             else:
                 space_count = 0
-                if '[' in job_element.text:
+                if '[' in tabLine.text:
                     doc.append(NoEscape('\\vspace{.4em}'))
                     doc.append(NoEscape('\\par\\needspace{2\\baselineskip}'))
                 else:
-                    if (job_element.text.count(' ')>len(job_element.text)/2) or len(job_element.text)<5:
+                    if (tabLine.text.count(' ')>len(tabLine.text)/2) or len(tabLine.text)<5:
                         doc.append(NoEscape('\\par\\needspace{\\baselineskip}'))
                         doc.append(NoEscape('\\vspace{.6em}'))
-                doc.append(NoEscape(job_element.text.replace('\\','\\textbackslash').replace(' ','\space ').replace('#','\\#').replace('_','\\_').replace('-','-{}')))
+                doc.append(NoEscape(tabLine.text.replace('\\','\\textbackslash').replace(' ','\space ').replace('#','\\#').replace('_','\\_').replace('-','-{}')))
 
         loadingEvent.set()
         file = asksaveasfilename(defaultextension = '.pdf',initialfile=title.text,filetypes=[("PDF Doc", "*.pdf")])
