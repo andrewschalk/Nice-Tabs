@@ -17,7 +17,6 @@ from selenium.webdriver.edge.service import Service as EdgeService
 from webdriver_manager.microsoft import EdgeChromiumDriverManager
 from subprocess import CREATE_NO_WINDOW
 import traceback
-
 """ Nice Tabs
 This program allows a user to convert an Ultimate Guitar webpage containing a tab to a clean printable PDF.
 Selenium scrapes the data from the given page and they are processed with Beautiful Soup.
@@ -33,6 +32,8 @@ Copyright 2023 Andrew Schalk
             \__/
       
 """
+global myGUI
+
 isConverting = False#False when application is idle, True when converting
 
 #os.chdir(sys._MEIPASS)#Uncomment for .exe deployment
@@ -40,7 +41,10 @@ isConverting = False#False when application is idle, True when converting
 class GUI:
     """Creates the window that contains the GUI and its components. Uses tkk with Azure dark theme."""
     def __init__(self,convertCommand):
-        self.generateTex = False
+        self.convertCommand = convertCommand
+        threading.Thread(target=self.runWindow).start()
+
+    def runWindow(self):
         width  = 600
         height = 250
 
@@ -62,29 +66,28 @@ class GUI:
         window.resizable(False,False)
 
         #GUI user options
-        generateTex = IntVar()
+        self.generateTex = IntVar()
 
         #Instantiate elements
-        greeting    = ttk.Label(text="Paste an ultimate guitar link in the box and hit \"Create\" to create and save a tab as a PDF.\n\n Example: https://tabs.ultimate-guitar.com/tab/darius-rucker/wagon-wheel-chords-1215756\n")
+        greeting = ttk.Label(text="Paste an ultimate guitar link in the box and hit \"Create\" to create and save a tab as a PDF.\n\n Example: https://tabs.ultimate-guitar.com/tab/darius-rucker/wagon-wheel-chords-1215756\n")
         button = ttk.Button(text="Create")
-        button.configure(command=convertCommand)
-        entry  = ttk.Entry(width=80)
-        entry.configure('<Return>',convertCommand)
-        check       = ttk.Checkbutton(text='Generate .tex file',variable=generateTex,onvalue=False,offvalue=True,)
+        button.configure(command=self.convertCommand)
+        self.entry = ttk.Entry(width=80)
+        self.entry.bind('<Return>',self.convertCommand)
+        check = ttk.Checkbutton(text='Generate .tex file',variable=self.generateTex,onvalue=False,offvalue=True,)
         check.invoke()#Make sure the box starts unticked
-
         #Pack elements (order matters!)
         ttk.Label().pack()
         greeting.pack()
-        entry.pack()
+        self.entry.pack()
         ttk.Label().pack()
         button.pack()
         check.pack()
         window.mainloop()#Create window
+        
 
     def setCommand(self,convertCommand):
         #self.entry.configure('<Return>',convertCommand)
-        print(self.button)
         self.button.configure(command=convertCommand)
         
     
@@ -95,13 +98,13 @@ class TabConverter:
     The user can choose whether to keep the .tex file using a checkbox.
     The user is then prompted for where to save the file and the file is saved.
     """
-    global driver,doc,title,generateTex
+    global doc,title
 
-    def __init__(self):
-        pass
+    def __init__(self,myGUI):
+        self.myGUI=myGUI
 
-    def getWebsite():
-        URL = entry.get()
+    def getWebsite(self):
+        URL = self.entry.get()
 
         options = webdriver.EdgeOptions()
         options.add_argument('--ignore-certificate-errors')#Don't show these errors as we don't care
@@ -123,33 +126,34 @@ class TabConverter:
         options.add_experimental_option("prefs", prefs)
         options.add_experimental_option('excludeSwitches', ['enable-logging'])
 
-        driver = webdriver.Edge(service=EdgeService(EdgeChromiumDriverManager().install()),options=options)
+        self.driver = webdriver.Edge(service=EdgeService(EdgeChromiumDriverManager().install()),options=options)
 
         try:#Let's try to contact the given webpage.
-            driver.get(URL)
+            self.driver.get(URL)
         except:
             messagebox.showinfo("Issue!","Something is wrong with the URL you entered.")
-            driver.quit()
+            self.driver.quit()
             isConverting = False
             return
-    def processHTML(driver):
-        soup = BeautifulSoup(driver.page_source, "html.parser")
-        driver.quit()#We've downloaded all needed data, close driver
+        
+    def processHTML(self):
+        soup = BeautifulSoup(self.driver.page_source, "html.parser")
+        self.driver.quit()#We've downloaded all needed data, close driver
         tabLines = soup.find_all("span", class_="y68er")#Each line of tab is one of these
-        title  = soup.find("h1",class_="dUjZr").text
+        self.title  = soup.find("h1",class_="dUjZr").text
         artist = soup.find("a",class_="aPPf7 fcGj5")
 
         cf.active = cf.Version1(indent=False)
-        doc = Document('basic')
-        doc.preamble.append(Package('geometry','margin=0.5in'))
-        doc.preamble.append(NoEscape('\setlength{\parskip}{-.4em}'))
-        doc.preamble.append(NoEscape('\pagenumbering{gobble}'))
-        doc.preamble.append(Package('needspace'))
-        doc.preamble.append(Package('courier'))
-        doc.preamble.append(NoEscape('\\renewcommand*\\familydefault{\\ttdefault}'))
+        self.doc = Document('basic')
+        self.doc.preamble.append(Package('geometry','margin=0.5in'))
+        self.doc.preamble.append(NoEscape('\setlength{\parskip}{-.4em}'))
+        self.doc.preamble.append(NoEscape('\pagenumbering{gobble}'))
+        self.doc.preamble.append(Package('needspace'))
+        self.doc.preamble.append(Package('courier'))
+        self.doc.preamble.append(NoEscape('\\renewcommand*\\familydefault{\\ttdefault}'))
 
         try:
-            doc.append(NoEscape('\\begin{center}\\begin{large}'+title.replace('Chords','').replace('Tab','')+'\\end{large}\\\\by '+artist.text+'\\end{center}\\vspace{1em}'))
+            self.doc.append(NoEscape('\\begin{center}\\begin{large}'+self.title.replace('Chords','').replace('Tab','')+'\\end{large}\\\\by '+artist.text+'\\end{center}\\vspace{1em}'))
         except:
             messagebox.showinfo("Issue!","Something may be wrong with the URL you entered. Please try again.")
             isConverting = False
@@ -158,23 +162,23 @@ class TabConverter:
         for tabLine in tabLines:
             """"This is all the formatting for the lines of the tab. This determines how each line is placed"""
             if len(tabLine.text) <4:
-                doc.append(NoEscape('\\vspace{1em}'))
+                self.doc.append(NoEscape('\\vspace{1em}'))
             else:
                 space_count = 0
                 if '[' in tabLine.text:
-                    doc.append(NoEscape('\\vspace{.4em}'))
-                    doc.append(NoEscape('\\par\\needspace{2\\baselineskip}'))
+                    self.doc.append(NoEscape('\\vspace{.4em}'))
+                    self.doc.append(NoEscape('\\par\\needspace{2\\baselineskip}'))
                 else:
                     if (tabLine.text.count(' ')>len(tabLine.text)/2) or len(tabLine.text)<5:
-                        doc.append(NoEscape('\\par\\needspace{\\baselineskip}'))
-                        doc.append(NoEscape('\\vspace{.6em}'))
-                doc.append(NoEscape(tabLine.text.replace('\\','\\textbackslash').replace(' ','\space ').replace('#','\\#').replace('_','\\_').replace('-','-{}')))
+                        self.doc.append(NoEscape('\\par\\needspace{\\baselineskip}'))
+                        self.doc.append(NoEscape('\\vspace{.6em}'))
+                self.doc.append(NoEscape(tabLine.text.replace('\\','\\textbackslash').replace(' ','\space ').replace('#','\\#').replace('_','\\_').replace('-','-{}')))
 
-    def saveFile():
-        file = asksaveasfilename(defaultextension = '.pdf',initialfile=title,filetypes=[("PDF Doc", "*.pdf")])
+    def saveFile(self):
+        file = asksaveasfilename(defaultextension = '.pdf',initialfile=self.title,filetypes=[("PDF Doc", "*.pdf")])
         if file:#If user selected a file path
             try:#Will usually fail if LaTeX compiler failed. Could also fail if saveas path is wrong.
-                doc.generate_pdf(file.replace('.pdf',''),clean_tex=generateTex.get(),compiler='venv/Lib/site-packages/pdflatex-0.1.3.dist-info')
+                self.doc.generate_pdf(file.replace('.pdf',''),clean_tex=self.generateTex.get(),compiler='venv/Lib/site-packages/pdflatex-0.1.3.dist-info')
                 threading.Thread(target=saved).start()
             except:
                 messagebox.showerror("Error","Something went wrong trying to render or save PDF. \n\n"+traceback.format_exc())
@@ -182,11 +186,12 @@ class TabConverter:
             messagebox.showinfo("File Not Saved","Please select a file location. Click \"Create\" again to select location.")
 
     def convert(self,generateTex):
+        self.entry=myGUI.entry
         self.generateTex = generateTex
         try:
             isConverting = True#We are no longer idle
         
-            if 'tabs.ultimate-guitar.com' not in entry.get():#If not ultimate guitar website
+            if 'tabs.ultimate-guitar.com' not in self.entry.get():#If not ultimate guitar website
                 messagebox.showinfo("Issue!","The URL must link to an Ultimate Guitar tab or chords page.")
                 isConverting = False
                 return
@@ -197,13 +202,12 @@ class TabConverter:
             isConverting = False#We're done converting; back to idle.
         except:#If anything unexpected happens, throw error window with stacktrace
             messagebox.showerror("Error!","Something went wrong!\n"+traceback.format_exc())
-            print(traceback)
-            driver.quit()
+
+            self.driver.quit()
             isConverting = False
 
 def runConverterAsThread(event=None):
     """Creates a new thread to run the conversion process in."""
-    global myGUI
     if not isConverting:#Only start conversion if idle
         threading.Thread(target=myConverter.convert(myGUI.generateTex)).start()
 
@@ -242,6 +246,6 @@ def loadingBar(str,event):
             dots=''
     loading.pack_forget()
     
-myConverter = TabConverter()
 myGUI = GUI(runConverterAsThread)
+myConverter = TabConverter(myGUI)
 #myGUI.setCommand(runConverterAsThread)
