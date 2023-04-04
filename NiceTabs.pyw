@@ -110,7 +110,7 @@ def tabConverter():
         if 'tabs.ultimate-guitar.com' not in entry.get():#If not ultimate guitar website
             loadingEvent.set()
             loadingEvent2.set()
-            messagebox.showinfo("Issue!","The URL must link to an Ultimate Guitar site.")
+            messagebox.showinfo("Issue!","The URL must link to an Ultimate Guitar tab or chords page.")
             isConverting = False
             return
         
@@ -166,7 +166,7 @@ def tabConverter():
         doc.preamble.append(NoEscape('\\renewcommand*\\familydefault{\\ttdefault}'))
 
         try:
-            doc.append(NoEscape('\\begin{center}\\begin{large}'+title.text.replace('Chords','').replace('Tab','')+'\\end{large}\\\\by '+artist.text+'\\end{center}\\vspace{1em}'))
+            doc.append(NoEscape('\\begin{center}\\begin{large}'+title.replace('Chords','').replace('Tab','')+'\\end{large}\\\\by '+artist.text+'\\end{center}\\vspace{1em}'))
         except:
             loadingEvent.set()
             messagebox.showinfo("Issue!","Something is wrong with the URL you entered.")
@@ -189,25 +189,26 @@ def tabConverter():
                 doc.append(NoEscape(tabLine.text.replace('\\','\\textbackslash').replace(' ','\space ').replace('#','\\#').replace('_','\\_').replace('-','-{}')))
 
         loadingEvent.set()
-        file = asksaveasfilename(defaultextension = '.pdf',initialfile=title.text,filetypes=[("PDF Doc", "*.pdf")])
+        file = asksaveasfilename(defaultextension = '.pdf',initialfile=title,filetypes=[("PDF Doc", "*.pdf")])
 
         if file:#If user selected a file path
             try:#Will usually fail if LaTeX compiler failed. Could also fail if saveas path is wrong.
                 loadingEvent.clear()
                 threading.Thread(target=loadingBar,args=('Rendering and saving file',loadingEvent)).start()
-                doc.generate_pdf(file.replace('.pdf',''),clean_tex=generateTex.get(),compiler='pdflatex')
+                print(file)
+                doc.generate_pdf(file.replace('.pdf',''),clean_tex=generateTex.get(),compiler='venv/Lib/site-packages/pdflatex-0.1.3.dist-info')
                 loadingEvent.set()
                 threading.Thread(target=saved).start()
             except:
                 loadingEvent.set()
-                messagebox.showerror("Error","Something went wrong trying to render or save PDF. \nThere may be something wrong with how this program interprets the given tab.")
+                messagebox.showerror("Error","Something went wrong trying to render or save PDF. \n\n"+traceback.format_exc())
         else:
             messagebox.showinfo("File Not Saved","Please select a file location. Click \"Create\" again to select location.")
             loadingEvent.set()
 
         isConverting = False#We're done converting; back to idle.
     except:#If anything unexpected happens, throw error window with stacktrace
-        messagebox.showerror("Error!","Something went wrong!\n"+traceback.format_exc())
+        messagebox.showerror("Error!","Something went wGrong!\n"+traceback.format_exc())
         loadingEvent.set()
         driver.quit()
         isConverting = False
@@ -223,7 +224,7 @@ def saved():
     time.sleep(.2)
     global savedLabel1, entry, savedLabel2
     entry.delete(0,END)
-    savedLabel1 = ttk.Label(text=title.text + ' saved.')
+    savedLabel1 = ttk.Label(text=title + ' saved.')
     savedLabel1.pack()
     savedLabel2 = ttk.Label(text='You may exit the application or continue generating files.')
     savedLabel2.pack()
