@@ -42,28 +42,25 @@ class GUI:
     """Creates the window that contains the GUI and its components. Uses tkk with Azure dark theme."""
     def __init__(self,convertCommand):
         self.convertCommand = convertCommand
-        threading.Thread(target=self.runWindow).start()
-
-    def runWindow(self):
         width  = 600
         height = 250
 
-        window = tk.Tk()
+        self.window = tk.Tk()
 
         # get screen width and height
-        ws = window.winfo_screenwidth()
-        hs = window.winfo_screenheight()
+        ws = self.window.winfo_screenwidth()
+        hs = self.window.winfo_screenheight()
 
         # calculate x and y coordinates for the Tk window
         x = (ws/2) - (width/2)
         y = (hs/2) - (height/2)
 
         #Initialize window
-        window.tk.call('source', './Azure/azure.tcl')
-        window.tk.call("set_theme", "dark")
-        window.geometry('%dx%d+%d+%d' % (width, height, x, y))
-        window.title('Nice Tabs')
-        window.resizable(False,False)
+        self.window.tk.call('source', './Azure/azure.tcl')
+        self.window.tk.call("set_theme", "dark")
+        self.window.geometry('%dx%d+%d+%d' % (width, height, x, y))
+        self.window.title('Nice Tabs')
+        self.window.resizable(False,False)
 
         #GUI user options
         self.generateTex = IntVar()
@@ -76,6 +73,7 @@ class GUI:
         self.entry.bind('<Return>',self.convertCommand)
         check = ttk.Checkbutton(text='Generate .tex file',variable=self.generateTex,onvalue=False,offvalue=True,)
         check.invoke()#Make sure the box starts unticked
+
         #Pack elements (order matters!)
         ttk.Label().pack()
         greeting.pack()
@@ -83,12 +81,12 @@ class GUI:
         ttk.Label().pack()
         button.pack()
         check.pack()
-        window.mainloop()#Create window
-        
 
-    def setCommand(self,convertCommand):
-        #self.entry.configure('<Return>',convertCommand)
-        self.button.configure(command=convertCommand)
+    def startGUI(self):
+        while True:
+            self.window.update_idletasks()
+            self.window.update()
+            self.URL=self.entry.get()
         
     
 
@@ -104,8 +102,6 @@ class TabConverter:
         self.myGUI=myGUI
 
     def getWebsite(self):
-        URL = self.entry.get()
-
         options = webdriver.EdgeOptions()
         options.add_argument('--ignore-certificate-errors')#Don't show these errors as we don't care
         options.add_argument('--ignore-ssl-errors')
@@ -127,21 +123,20 @@ class TabConverter:
         options.add_experimental_option('excludeSwitches', ['enable-logging'])
 
         self.driver = webdriver.Edge(service=EdgeService(EdgeChromiumDriverManager().install()),options=options)
-
-        try:#Let's try to contact the given webpage.
-            self.driver.get(URL)
+        self.driver.get(self.URL)
+        
+    def processHTML(self):
+        try:
+            soup = BeautifulSoup(self.driver.page_source, "html.parser")
+            self.driver.quit()#We've downloaded all needed data, close driver
+            tabLines = soup.find_all("span", class_="y68er")#Each line of tab is one of these
+            self.title  = soup.find("h1",class_="dUjZr").text
+            artist = soup.find("a",class_="aPPf7 fcGj5")
         except:
             messagebox.showinfo("Issue!","Something is wrong with the URL you entered.")
             self.driver.quit()
             isConverting = False
             return
-        
-    def processHTML(self):
-        soup = BeautifulSoup(self.driver.page_source, "html.parser")
-        self.driver.quit()#We've downloaded all needed data, close driver
-        tabLines = soup.find_all("span", class_="y68er")#Each line of tab is one of these
-        self.title  = soup.find("h1",class_="dUjZr").text
-        artist = soup.find("a",class_="aPPf7 fcGj5")
 
         cf.active = cf.Version1(indent=False)
         self.doc = Document('basic')
@@ -186,12 +181,12 @@ class TabConverter:
             messagebox.showinfo("File Not Saved","Please select a file location. Click \"Create\" again to select location.")
 
     def convert(self,generateTex):
-        self.entry=myGUI.entry
+        self.URL=myGUI.URL
         self.generateTex = generateTex
         try:
             isConverting = True#We are no longer idle
         
-            if 'tabs.ultimate-guitar.com' not in self.entry.get():#If not ultimate guitar website
+            if 'tabs.ultimate-guitar.com' not in self.URL:#If not ultimate guitar website
                 messagebox.showinfo("Issue!","The URL must link to an Ultimate Guitar tab or chords page.")
                 isConverting = False
                 return
@@ -248,4 +243,5 @@ def loadingBar(str,event):
     
 myGUI = GUI(runConverterAsThread)
 myConverter = TabConverter(myGUI)
+myGUI.startGUI()
 #myGUI.setCommand(runConverterAsThread)
