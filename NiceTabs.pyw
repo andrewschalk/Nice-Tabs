@@ -32,7 +32,7 @@ Copyright 2023 Andrew Schalk
             \__/
       
 """
-global myGUI
+global myGUI,myConverter
 
 isConverting = False#False when application is idle, True when converting
 
@@ -68,9 +68,10 @@ class GUI:
         #Instantiate elements
         greeting = ttk.Label(text="Paste an ultimate guitar link in the box and hit \"Create\" to create and save a tab as a PDF.\n\n Example: https://tabs.ultimate-guitar.com/tab/darius-rucker/wagon-wheel-chords-1215756\n")
         button = ttk.Button(text="Create")
-        button.configure(command=self.convertCommand)
+        self.URL = ''
+        button.configure(command=lambda: self.convertCommand(self.generateTex,self))
         self.entry = ttk.Entry(width=80)
-        self.entry.bind('<Return>',self.convertCommand)
+        self.entry.bind('<Return>',lambda: self.convertCommand(self.generateTex,self))
         check = ttk.Checkbutton(text='Generate .tex file',variable=self.generateTex,onvalue=False,offvalue=True,)
         check.invoke()#Make sure the box starts unticked
 
@@ -90,16 +91,16 @@ class GUI:
         
     
 
-class TabConverter:
+class TabConverter(threading.Thread):
     """Retreives the data and creates a PDF.
     The data is scraped from the given URL. The data is then packed into a .tex file.
     The user can choose whether to keep the .tex file using a checkbox.
     The user is then prompted for where to save the file and the file is saved.
     """
-    global doc,title
+    global doc,title,isConverting
 
-    def __init__(self,myGUI):
-        self.myGUI=myGUI
+    def __init__(self):
+        isConverting = False
 
     def getWebsite(self):
         options = webdriver.EdgeOptions()
@@ -180,8 +181,12 @@ class TabConverter:
         else:
             messagebox.showinfo("File Not Saved","Please select a file location. Click \"Create\" again to select location.")
 
-    def convert(self,generateTex):
-        self.URL=myGUI.URL
+    def convert(self,generateTex,GUI):
+        self.URL = GUI.URL
+        global isConverting
+        if isConverting:
+            return
+        
         self.generateTex = generateTex
         try:
             isConverting = True#We are no longer idle
@@ -200,11 +205,6 @@ class TabConverter:
 
             self.driver.quit()
             isConverting = False
-
-def runConverterAsThread(event=None):
-    """Creates a new thread to run the conversion process in."""
-    if not isConverting:#Only start conversion if idle
-        threading.Thread(target=myConverter.convert(myGUI.generateTex)).start()
 
 def saved():
     """Creates text at bottom of window telling user that file was saved. Disappears after 10 seconds"""
@@ -241,7 +241,7 @@ def loadingBar(str,event):
             dots=''
     loading.pack_forget()
     
-myGUI = GUI(runConverterAsThread)
-myConverter = TabConverter(myGUI)
+myConverter = TabConverter()
+myGUI = GUI(myConverter.convert)
 myGUI.startGUI()
 #myGUI.setCommand(runConverterAsThread)
