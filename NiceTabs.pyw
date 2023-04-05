@@ -38,10 +38,14 @@ isConverting = False#False when application is idle, True when converting
 
 #os.chdir(sys._MEIPASS)#Uncomment for .exe deployment
 
-class GUI:
+class GUI(threading.Thread):
     """Creates the window that contains the GUI and its components. Uses tkk with Azure dark theme."""
     def __init__(self,convertCommand):
+        """
+        :param convertCommand (runnable): The command that is ran when the create button is pressed.
+        """
         self.convertCommand = convertCommand
+        
         width  = 600
         height = 250
 
@@ -67,9 +71,9 @@ class GUI:
 
         #Instantiate elements
         greeting = ttk.Label(text="Paste an ultimate guitar link in the box and hit \"Create\" to create and save a tab as a PDF.\n\n Example: https://tabs.ultimate-guitar.com/tab/darius-rucker/wagon-wheel-chords-1215756\n")
-        button = ttk.Button(text="Create")
+        createButton = ttk.Button(text="Create")
         self.URL = ''
-        button.configure(command=lambda: self.convertCommand(self.generateTex,self))
+        createButton.configure(command=lambda: self.convertCommand(self.generateTex,self))
         self.entry = ttk.Entry(width=80)
         self.entry.bind('<Return>',lambda: self.convertCommand(self.generateTex,self))
         check = ttk.Checkbutton(text='Generate .tex file',variable=self.generateTex,onvalue=False,offvalue=True,)
@@ -80,16 +84,16 @@ class GUI:
         greeting.pack()
         self.entry.pack()
         ttk.Label().pack()
-        button.pack()
+        createButton.pack()
         check.pack()
 
     def startGUI(self):
+        """Creates the tk window that contains the GUI. 
+        """
         while True:
             self.window.update_idletasks()
             self.window.update()
             self.URL=self.entry.get()
-        
-    
 
 class TabConverter(threading.Thread):
     """Retreives the data and creates a PDF.
@@ -99,10 +103,18 @@ class TabConverter(threading.Thread):
     """
     global doc,title,isConverting
 
-    def __init__(self):
+    def __init__(self,messageManager):
+        """
+        :param messageManager (MessageManager): The current instance of MessageManager.
+        """
+        self.messageManager = messageManager
         isConverting = False
 
-    def getWebsite(self):
+
+    def _getWebsite(self):
+        """Retreives the webpage from the given URL."""
+        event = Event()
+        self.messageManager.addMessage("Scoopdity whoop",False)
         options = webdriver.EdgeOptions()
         options.add_argument('--ignore-certificate-errors')#Don't show these errors as we don't care
         options.add_argument('--ignore-ssl-errors')
@@ -125,13 +137,15 @@ class TabConverter(threading.Thread):
 
         self.driver = webdriver.Edge(service=EdgeService(EdgeChromiumDriverManager().install()),options=options)
         self.driver.get(self.URL)
+        event.set()
         
-    def processHTML(self):
+    def _processHTML(self):
+        """Processes HTML page after we grab it from the website."""
         try:
             soup = BeautifulSoup(self.driver.page_source, "html.parser")
             self.driver.quit()#We've downloaded all needed data, close driver
             tabLines = soup.find_all("span", class_="y68er")#Each line of tab is one of these
-            self.title  = soup.find("h1",class_="dUjZr").text
+            self.title = soup.find("h1",class_="dUjZr").text
             artist = soup.find("a",class_="aPPf7 fcGj5")
         except:
             messagebox.showinfo("Issue!","Something is wrong with the URL you entered.")
@@ -170,7 +184,8 @@ class TabConverter(threading.Thread):
                         self.doc.append(NoEscape('\\vspace{.6em}'))
                 self.doc.append(NoEscape(tabLine.text.replace('\\','\\textbackslash').replace(' ','\space ').replace('#','\\#').replace('_','\\_').replace('-','-{}')))
 
-    def saveFile(self):
+    def _saveFile(self):
+        """Prompts the user where to save the file. Then saves the file."""
         file = asksaveasfilename(defaultextension = '.pdf',initialfile=self.title,filetypes=[("PDF Doc", "*.pdf")])
         if file:#If user selected a file path
             try:#Will usually fail if LaTeX compiler failed. Could also fail if saveas path is wrong.
@@ -182,6 +197,10 @@ class TabConverter(threading.Thread):
             messagebox.showinfo("File Not Saved","Please select a file location. Click \"Create\" again to select location.")
 
     def convert(self,generateTex,GUI):
+        """Retreives, processes, and saves the tab given by the user.
+        :param generateTex (boolean): Determines whether a .tex file will be generated.
+        :param GUI (GUI): The current GUI object.
+        """
         self.URL = GUI.URL
         global isConverting
         if isConverting:
@@ -195,16 +214,59 @@ class TabConverter(threading.Thread):
                 messagebox.showinfo("Issue!","The URL must link to an Ultimate Guitar tab or chords page.")
                 isConverting = False
                 return
-        
-            self.getWebsite()
-            self.processHTML()
-            self.saveFile()
+
+            self._getWebsite()
+            self._processHTML()
+            self._saveFile()
             isConverting = False#We're done converting; back to idle.
+            
         except:#If anything unexpected happens, throw error window with stacktrace
             messagebox.showerror("Error!","Something went wrong!\n"+traceback.format_exc())
-
             self.driver.quit()
             isConverting = False
+
+class MessageManager(threading.Thread):
+    
+    def __init__(self):
+        self.messages = []
+    
+    def setGUI(self,GUI):
+        """Use this to pass the current GUI object. Must be ran before utilizing other methods."""
+        self.GUI = GUI
+    
+    def loadingBar(self,str,event):
+        """Creates a simple loading animation along with the given text.
+        :param str (String): The message to display to the user while they wait.
+        :param event (Event): The Event object that will be called when loading is finished.
+        """
+        #time.sleep(.2)#Allows for previous message to clear before displaying this one.
+        loading = ttk.Label()
+        loading.pack()
+        waitTime =.3
+        
+        i=0
+        dots=''
+        while not event.is_set():#Adds 0 to 3 dots incrementally at the end of the string with a pause between them
+            loading.config(text=str+dots)
+            time.sleep(waitTime)
+            dots=dots+'.'
+            i+=1
+            if i == 4:
+                i=0
+                dots=''
+        loading.pack_forget()
+        
+    def clearMessages(self):
+        for message in self.messages:
+            message.pack_forget()
+    
+    def addMessage(self,str,isLoading,event=None):
+        message = ttk.Label(text=str)
+        message.pack()
+        if isLoading:
+            threading.Thread(target=self.loadingBar(str,event)).start()
+        else:
+            self.messages = self.messages.append(message)
 
 def saved():
     """Creates text at bottom of window telling user that file was saved. Disappears after 10 seconds"""
@@ -219,29 +281,11 @@ def saved():
     savedLabel1.pack_forget()
     savedLabel2.pack_forget()
 
-def loadingBar(str,event):
-    """Creates a simple loading animation along with the given text.
-    :param str The message to display to the user while they wait.
-    :param event The Event object that will be called when loading is finished.
-    """
-    time.sleep(.2)#Allows for previous message to clear before displaying this one.
-    loading = ttk.Label()
-    loading.pack()
-    waitTime =.3
     
-    i=0
-    dots=''
-    while not event.is_set():#Adds 0 to 3 dots incrementally at the end of the string with a pause between them
-        loading.config(text=str+dots)
-        time.sleep(waitTime)
-        dots=dots+'.'
-        i+=1
-        if i == 4:
-            i=0
-            dots=''
-    loading.pack_forget()
-    
-myConverter = TabConverter()
+myMessageManager = MessageManager()    
+myConverter = TabConverter(myMessageManager)
 myGUI = GUI(myConverter.convert)
+
+myMessageManager.setGUI(myGUI)
 myGUI.startGUI()
 #myGUI.setCommand(runConverterAsThread)
