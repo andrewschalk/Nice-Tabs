@@ -32,13 +32,13 @@ Copyright 2023 Andrew Schalk
             \__/
       
 """
-global myGUI,myConverter
+global myGUI,myConverter,myMessageManager
 
 isConverting = False#False when application is idle, True when converting
 
 #os.chdir(sys._MEIPASS)#Uncomment for .exe deployment
 
-class GUI(threading.Thread):
+class GUI():
     """Creates the window that contains the GUI and its components. Uses tkk with Azure dark theme."""
     def __init__(self,myConverter):
         """
@@ -92,14 +92,11 @@ class GUI(threading.Thread):
         check.pack()
         messageField.pack()
 
-    def startGUI(self):
-        """Creates the tk window that contains the GUI. 
-        """
         while True:
             self.window.update_idletasks()
             self.window.update()
 
-class TabConverter(threading.Thread):
+class TabConverter():
     """Retreives the data and creates a PDF.
     The data is scraped from the given URL. The data is then packed into a .tex file.
     The user can choose whether to keep the .tex file using a checkbox.
@@ -229,7 +226,7 @@ class TabConverter(threading.Thread):
             self.driver.quit()
             isConverting = False
 
-class MessageManager(threading.Thread):
+class MessageManager():
     
     def __init__(self):
         pass
