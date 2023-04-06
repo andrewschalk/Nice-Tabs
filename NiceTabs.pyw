@@ -40,11 +40,12 @@ isConverting = False#False when application is idle, True when converting
 
 class GUI(threading.Thread):
     """Creates the window that contains the GUI and its components. Uses tkk with Azure dark theme."""
-    def __init__(self,convertCommand):
+    def __init__(self,myConverter):
         """
         :param convertCommand (runnable): The command that is ran when the create button is pressed.
         """
-        self.convertCommand = convertCommand
+        self.convertCommand = myConverter.convert
+        self.converter = myConverter
         
         width  = 600
         height = 250
@@ -72,10 +73,13 @@ class GUI(threading.Thread):
         #Instantiate elements
         greeting = ttk.Label(text="Paste an ultimate guitar link in the box and hit \"Create\" to create and save a tab as a PDF.\n\n Example: https://tabs.ultimate-guitar.com/tab/darius-rucker/wagon-wheel-chords-1215756\n")
         createButton = ttk.Button(text="Create")
-        self.URL = ''
-        createButton.configure(command=lambda: self.convertCommand(self.generateTex,self))
-        self.entry = ttk.Entry(width=80)
-        self.entry.bind('<Return>',lambda: self.convertCommand(self.generateTex,self))
+        
+        messageText = StringVar()
+        messageField = ttk.Label(text = messageText.get())
+        createButton.configure(command=lambda: self.convertCommand(self.generateTex,entryText,messageText))
+        entryText = StringVar()
+        self.entry = ttk.Entry(width=80, textvariable=entryText)
+        self.entry.bind('<Return>',lambda: self.convertCommand(self.generateTex,entryText,messageText))
         check = ttk.Checkbutton(text='Generate .tex file',variable=self.generateTex,onvalue=False,offvalue=True,)
         check.invoke()#Make sure the box starts unticked
 
@@ -86,6 +90,7 @@ class GUI(threading.Thread):
         ttk.Label().pack()
         createButton.pack()
         check.pack()
+        messageField.pack()
 
     def startGUI(self):
         """Creates the tk window that contains the GUI. 
@@ -93,7 +98,6 @@ class GUI(threading.Thread):
         while True:
             self.window.update_idletasks()
             self.window.update()
-            self.URL=self.entry.get()
 
 class TabConverter(threading.Thread):
     """Retreives the data and creates a PDF.
@@ -113,8 +117,7 @@ class TabConverter(threading.Thread):
 
     def _getWebsite(self):
         """Retreives the webpage from the given URL."""
-        event = Event()
-        self.messageManager.addMessage("Scoopdity whoop",False)
+        self.messageManager.addMessage("Scoopdity whoop",False,self.messageText)
         options = webdriver.EdgeOptions()
         options.add_argument('--ignore-certificate-errors')#Don't show these errors as we don't care
         options.add_argument('--ignore-ssl-errors')
@@ -137,7 +140,6 @@ class TabConverter(threading.Thread):
 
         self.driver = webdriver.Edge(service=EdgeService(EdgeChromiumDriverManager().install()),options=options)
         self.driver.get(self.URL)
-        event.set()
         
     def _processHTML(self):
         """Processes HTML page after we grab it from the website."""
@@ -196,12 +198,13 @@ class TabConverter(threading.Thread):
         else:
             messagebox.showinfo("File Not Saved","Please select a file location. Click \"Create\" again to select location.")
 
-    def convert(self,generateTex,GUI):
+    def convert(self,generateTex,entryText,messageText):
         """Retreives, processes, and saves the tab given by the user.
         :param generateTex (boolean): Determines whether a .tex file will be generated.
         :param GUI (GUI): The current GUI object.
         """
-        self.URL = GUI.URL
+        self.URL = entryText.get()
+        self.messageText = messageText
         global isConverting
         if isConverting:
             return
@@ -214,8 +217,9 @@ class TabConverter(threading.Thread):
                 messagebox.showinfo("Issue!","The URL must link to an Ultimate Guitar tab or chords page.")
                 isConverting = False
                 return
-
+            self.messageManager.addMessage('hello',True,self.messageText)
             self._getWebsite()
+            self.messageManager.clearMessage()
             self._processHTML()
             self._saveFile()
             isConverting = False#We're done converting; back to idle.
@@ -228,45 +232,37 @@ class TabConverter(threading.Thread):
 class MessageManager(threading.Thread):
     
     def __init__(self):
-        self.messages = []
+        pass
     
-    def setGUI(self,GUI):
-        """Use this to pass the current GUI object. Must be ran before utilizing other methods."""
-        self.GUI = GUI
-    
-    def loadingBar(self,str,event):
+    def loadingBar(self):
         """Creates a simple loading animation along with the given text.
         :param str (String): The message to display to the user while they wait.
         :param event (Event): The Event object that will be called when loading is finished.
         """
-        #time.sleep(.2)#Allows for previous message to clear before displaying this one.
-        loading = ttk.Label()
-        loading.pack()
-        waitTime =.3
-        
+        time.sleep(.1)#Allows the previous thread to see that the event was set before clearing
+        self.event.clear()
         i=0
         dots=''
-        while not event.is_set():#Adds 0 to 3 dots incrementally at the end of the string with a pause between them
-            loading.config(text=str+dots)
-            time.sleep(waitTime)
+        while not self.event.is_set():#Adds 0 to 3 dots incrementally at the end of the string with a pause between them
+            self.messageText=self.str+dots
+            time.sleep(.1)
             dots=dots+'.'
             i+=1
             if i == 4:
                 i=0
                 dots=''
-        loading.pack_forget()
         
-    def clearMessages(self):
-        for message in self.messages:
-            message.pack_forget()
+    def clearMessage(self):
+        self.messageText = ''
+        self.event.set()
+            
     
-    def addMessage(self,str,isLoading,event=None):
-        message = ttk.Label(text=str)
-        message.pack()
+    def addMessage(self,str,isLoading,messageText):
+        self.str = str
+        self.messageText = messageText
+        self.event = Event()
         if isLoading:
-            threading.Thread(target=self.loadingBar(str,event)).start()
-        else:
-            self.messages = self.messages.append(message)
+            threading.Thread(target=self.loadingBar()).start()
 
 def saved():
     """Creates text at bottom of window telling user that file was saved. Disappears after 10 seconds"""
@@ -284,8 +280,6 @@ def saved():
     
 myMessageManager = MessageManager()    
 myConverter = TabConverter(myMessageManager)
-myGUI = GUI(myConverter.convert)
-
-myMessageManager.setGUI(myGUI)
+myGUI = GUI(myConverter)
 myGUI.startGUI()
 #myGUI.setCommand(runConverterAsThread)
