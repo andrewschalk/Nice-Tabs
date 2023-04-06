@@ -32,13 +32,13 @@ Copyright 2023 Andrew Schalk
             \__/
       
 """
-global myGUI,myConverter
+global myGUI,myConverter,myMessageManager
 
 isConverting = False#False when application is idle, True when converting
 
 #os.chdir(sys._MEIPASS)#Uncomment for .exe deployment
 
-class GUI(threading.Thread):
+class GUI():
     """Creates the window that contains the GUI and its components. Uses tkk with Azure dark theme."""
     def __init__(self,convertCommand):
         """
@@ -87,15 +87,13 @@ class GUI(threading.Thread):
         createButton.pack()
         check.pack()
 
-    def startGUI(self):
-        """Creates the tk window that contains the GUI. 
-        """
         while True:
             self.window.update_idletasks()
             self.window.update()
             self.URL=self.entry.get()
 
-class TabConverter(threading.Thread):
+
+class TabConverter():
     """Retreives the data and creates a PDF.
     The data is scraped from the given URL. The data is then packed into a .tex file.
     The user can choose whether to keep the .tex file using a checkbox.
@@ -113,7 +111,6 @@ class TabConverter(threading.Thread):
 
     def _getWebsite(self):
         """Retreives the webpage from the given URL."""
-        event = Event()
         self.messageManager.addMessage("Scoopdity whoop",False)
         options = webdriver.EdgeOptions()
         options.add_argument('--ignore-certificate-errors')#Don't show these errors as we don't care
@@ -137,7 +134,6 @@ class TabConverter(threading.Thread):
 
         self.driver = webdriver.Edge(service=EdgeService(EdgeChromiumDriverManager().install()),options=options)
         self.driver.get(self.URL)
-        event.set()
         
     def _processHTML(self):
         """Processes HTML page after we grab it from the website."""
@@ -225,16 +221,12 @@ class TabConverter(threading.Thread):
             self.driver.quit()
             isConverting = False
 
-class MessageManager(threading.Thread):
+class MessageManager():
     
     def __init__(self):
         self.messages = []
-    
-    def setGUI(self,GUI):
-        """Use this to pass the current GUI object. Must be ran before utilizing other methods."""
-        self.GUI = GUI
-    
-    def loadingBar(self,str,event):
+
+    def _loadingBar(self,str,event):
         """Creates a simple loading animation along with the given text.
         :param str (String): The message to display to the user while they wait.
         :param event (Event): The Event object that will be called when loading is finished.
@@ -259,13 +251,18 @@ class MessageManager(threading.Thread):
     def clearMessages(self):
         for message in self.messages:
             message.pack_forget()
-    
+
     def addMessage(self,str,isLoading,event=None):
-        message = ttk.Label(text=str)
-        message.pack()
+        """
+        :param str (String) Message to display.
+        :param isLoading (boolean) True if this message should also have a loading animation.
+        :param event (Event) For when isLoading is True. The event that will be set when loading is done.
+        """
         if isLoading:
-            threading.Thread(target=self.loadingBar(str,event)).start()
+            threading.Thread(target=self._loadingBar(str,event)).start()
         else:
+            message = ttk.Label(text=str)
+            message.pack()
             self.messages = self.messages.append(message)
 
 def saved():
@@ -281,11 +278,18 @@ def saved():
     savedLabel1.pack_forget()
     savedLabel2.pack_forget()
 
-    
-myMessageManager = MessageManager()    
-myConverter = TabConverter(myMessageManager)
-myGUI = GUI(myConverter.convert)
+def runMessageManager():
+    global myMessageManager
+    myMessageManager = MessageManager()
 
-myMessageManager.setGUI(myGUI)
-myGUI.startGUI()
-#myGUI.setCommand(runConverterAsThread)
+def runConverter():
+    global myConverter
+    myConverter = TabConverter(myMessageManager)
+
+def runGUI():
+    global myGUI
+    myGUI = GUI(myConverter.convert).start()
+
+threading.Thread(target=runMessageManager).start()
+threading.Thread(target=runConverter).start()
+threading.Thread(target=runGUI).start()
