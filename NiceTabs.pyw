@@ -32,7 +32,7 @@ Copyright 2023 Andrew Schalk
             \__/
       
 """
-global myGUI,myConverter,myMessageManager
+#global myConverter,myMessageManager
 
 isConverting = False#False when application is idle, True when converting
 
@@ -42,7 +42,7 @@ class GUI():
     """Creates the window that contains the GUI and its components. Uses tkk with Azure dark theme."""
     def __init__(self,myConverter):
         """
-        :param convertCommand (runnable): The command that is ran when the create button is pressed.
+        :param myConverter (TabConverter): The current tab converter
         """
         self.convertCommand = myConverter.convert
         self.converter = myConverter
@@ -76,10 +76,10 @@ class GUI():
         
         messageText = StringVar()
         messageField = ttk.Label(text = messageText.get())
-        createButton.configure(command=lambda: self.convertCommand(self.generateTex,entryText,messageText))
+        createButton.configure(command=lambda: threading.Thread(target=lambda: self.convertCommand(self.generateTex,entryText,messageText)).start())
         entryText = StringVar()
         self.entry = ttk.Entry(width=80, textvariable=entryText)
-        self.entry.bind('<Return>',lambda: self.convertCommand(self.generateTex,entryText,messageText))
+        self.entry.bind('<Return>',lambda: threading.Thread(target=lambda: self.convertCommand(self.generateTex,entryText,messageText)).start())
         check = ttk.Checkbutton(text='Generate .tex file',variable=self.generateTex,onvalue=False,offvalue=True,)
         check.invoke()#Make sure the box starts unticked
 
@@ -92,9 +92,7 @@ class GUI():
         check.pack()
         messageField.pack()
 
-        while True:
-            self.window.update_idletasks()
-            self.window.update()
+        self.window.mainloop()
 
 class TabConverter():
     """Retreives the data and creates a PDF.
@@ -198,7 +196,7 @@ class TabConverter():
     def convert(self,generateTex,entryText,messageText):
         """Retreives, processes, and saves the tab given by the user.
         :param generateTex (boolean): Determines whether a .tex file will be generated.
-        :param GUI (GUI): The current GUI object.
+        :param entryText
         """
         self.URL = entryText.get()
         self.messageText = messageText
@@ -259,7 +257,7 @@ class MessageManager():
         self.messageText = messageText
         self.event = Event()
         if isLoading:
-            threading.Thread(target=self.loadingBar()).start()
+            threading.Thread(target=self.loadingBar).start()
 
 def saved():
     """Creates text at bottom of window telling user that file was saved. Disappears after 10 seconds"""
@@ -274,9 +272,19 @@ def saved():
     savedLabel1.pack_forget()
     savedLabel2.pack_forget()
 
-    
-myMessageManager = MessageManager()    
-myConverter = TabConverter(myMessageManager)
-myGUI = GUI(myConverter)
-myGUI.startGUI()
+def runMessageManager():
+    global myMessageManager
+    myMessageManager = MessageManager()
+  
+def runConverter():
+    global myConverter
+    myConverter = TabConverter(myMessageManager)
+
+def runGUI():
+    myGUI = GUI(myConverter)
+
+threading.Thread(target=runMessageManager).start()
+threading.Thread(target=runConverter).start()
+threading.Thread(target=runGUI).start()
+
 #myGUI.setCommand(runConverterAsThread)
