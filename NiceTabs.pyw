@@ -75,9 +75,10 @@ class GUI():
         createButton = ttk.Button(text="Create")
         
         messageText = StringVar()
-        messageField = ttk.Label(text = messageText.get())
-        createButton.configure(command=lambda: threading.Thread(target=lambda: self.convertCommand(self.generateTex,entryText,messageText)).start())
+        messageField = ttk.Label(textvariable=messageText)
+
         entryText = StringVar()
+        createButton.configure(command=lambda: threading.Thread(target=lambda: self.convertCommand(self.generateTex,entryText,messageText)).start())
         self.entry = ttk.Entry(width=80, textvariable=entryText)
         self.entry.bind('<Return>',lambda: threading.Thread(target=lambda: self.convertCommand(self.generateTex,entryText,messageText)).start())
         check = ttk.Checkbutton(text='Generate .tex file',variable=self.generateTex,onvalue=False,offvalue=True,)
@@ -112,7 +113,6 @@ class TabConverter():
 
     def _getWebsite(self):
         """Retreives the webpage from the given URL."""
-        self.messageManager.addMessage("Scoopdity whoop",False,self.messageText)
         options = webdriver.EdgeOptions()
         options.add_argument('--ignore-certificate-errors')#Don't show these errors as we don't care
         options.add_argument('--ignore-ssl-errors')
@@ -196,10 +196,10 @@ class TabConverter():
     def convert(self,generateTex,entryText,messageText):
         """Retreives, processes, and saves the tab given by the user.
         :param generateTex (boolean): Determines whether a .tex file will be generated.
-        :param entryText
+        :param entryText (StringVar): The variable that holds the value in the entry field
+        :param messageText (StringVar): The variable that holds the current user message.
         """
         self.URL = entryText.get()
-        self.messageText = messageText
         global isConverting
         if isConverting:
             return
@@ -212,16 +212,19 @@ class TabConverter():
                 messagebox.showinfo("Issue!","The URL must link to an Ultimate Guitar tab or chords page.")
                 isConverting = False
                 return
-            self.messageManager.addMessage('hello',True,self.messageText)
+            self.messageManager.addMessage('Downloading webpage',True,messageText)
             self._getWebsite()
-            self.messageManager.clearMessage()
+            self.messageManager.addMessage('Generating PDF',True,messageText)
             self._processHTML()
+            self.messageManager.clearMessage()
             self._saveFile()
+            self.messageManager.addMessage('File(s) saved. You may exit the application or continue generating files.',False,messageText)
             isConverting = False#We're done converting; back to idle.
             
         except:#If anything unexpected happens, throw error window with stacktrace
             messagebox.showerror("Error!","Something went wrong!\n"+traceback.format_exc())
             self.driver.quit()
+            self.messageManager.clearMessage()
             isConverting = False
 
 class MessageManager():
@@ -229,7 +232,7 @@ class MessageManager():
     def __init__(self):
         pass
     
-    def loadingBar(self):
+    def _loadingBar(self):
         """Creates a simple loading animation along with the given text.
         :param str (String): The message to display to the user while they wait.
         :param event (Event): The Event object that will be called when loading is finished.
@@ -239,8 +242,8 @@ class MessageManager():
         i=0
         dots=''
         while not self.event.is_set():#Adds 0 to 3 dots incrementally at the end of the string with a pause between them
-            self.messageText=self.str+dots
-            time.sleep(.1)
+            self.messageText.set(self.str+dots)
+            time.sleep(.3)
             dots=dots+'.'
             i+=1
             if i == 4:
@@ -248,16 +251,20 @@ class MessageManager():
                 dots=''
         
     def clearMessage(self):
-        self.messageText = ''
-        self.event.set()
+        try:#Sometimes the Event object may not yet be initialized. In this case, there is no message, so no need to clear.
+            self.event.set()
+            self.messageText.set('')
+        except:
+            pass
             
     
     def addMessage(self,str,isLoading,messageText):
+        self.clearMessage()
         self.str = str
         self.messageText = messageText
         self.event = Event()
         if isLoading:
-            threading.Thread(target=self.loadingBar).start()
+            threading.Thread(target=self._loadingBar).start()
 
 def saved():
     """Creates text at bottom of window telling user that file was saved. Disappears after 10 seconds"""
@@ -272,19 +279,8 @@ def saved():
     savedLabel1.pack_forget()
     savedLabel2.pack_forget()
 
-def runMessageManager():
-    global myMessageManager
-    myMessageManager = MessageManager()
-  
-def runConverter():
-    global myConverter
-    myConverter = TabConverter(myMessageManager)
-
-def runGUI():
-    myGUI = GUI(myConverter)
-
-threading.Thread(target=runMessageManager).start()
-threading.Thread(target=runConverter).start()
-threading.Thread(target=runGUI).start()
+myMessageManager = MessageManager()
+myConverter = TabConverter(myMessageManager)
+myGUI = GUI(myConverter)
 
 #myGUI.setCommand(runConverterAsThread)
