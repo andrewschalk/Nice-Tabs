@@ -3,8 +3,10 @@ from tkinter import IntVar,ttk
 from tkinter import *
 from tkinter.ttk import *
 import threading
+
 class GUI():
-    """Creates the window that contains the GUI and its components. Uses tkk with Azure dark theme."""
+    """ The graphical interface for NiceTabs. Uses the Azure dark theme for tkk."""
+    
     def __init__(self,myConverter):
         """
         :param myConverter (TabConverter): The current tab converter

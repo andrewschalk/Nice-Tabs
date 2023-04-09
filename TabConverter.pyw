@@ -9,9 +9,11 @@ from selenium.webdriver.edge.service import Service as EdgeService
 from webdriver_manager.microsoft import EdgeChromiumDriverManager
 from tkinter.filedialog import asksaveasfilename
 import traceback
+import stat
+import os
 
 class TabConverter():
-    """Retreives the data and creates a PDF.
+    """Retreives data from webpage and creates a PDF.
     The data is scraped from the given URL. The data is then packed into a .tex file.
     The user can choose whether to keep the .tex file using a checkbox.
     The user is then prompted for where to save the file and the file is saved.
@@ -102,7 +104,7 @@ class TabConverter():
         file = asksaveasfilename(defaultextension = '.pdf',initialfile=self.title,filetypes=[("PDF Doc", "*.pdf")])
         if file:#If user selected a file path
             try:#Will usually fail if LaTeX compiler failed. Could also fail if saveas path is wrong.
-                self.doc.generate_pdf(file.replace('.pdf',''),clean_tex=self.generateTex.get(),compiler='venv/Lib/site-packages/pdflatex-0.1.3.dist-info')
+                self.doc.generate_pdf(file.replace('.pdf',''),clean_tex=self.generateTex.get())#,compiler='venv/Lib/site-packages/pdflatex-0.1.3.dist-info')
             except:
                 messagebox.showerror("Error","Something went wrong trying to render or save PDF. \n\n"+traceback.format_exc())
         else:
@@ -127,13 +129,13 @@ class TabConverter():
                 messagebox.showinfo("Issue!","The URL must link to an Ultimate Guitar tab or chords page.")
                 isConverting = False
                 return
-            self.messageManager.addMessage('Downloading webpage',True,messageText)
+            self.messageManager.setMessage('Downloading webpage',True,messageText)
             self._getWebsite()
-            self.messageManager.addMessage('Generating PDF',True,messageText)
+            self.messageManager.setMessage('Generating PDF',True,messageText)
             self._processHTML()
-            self.messageManager.clearMessage()
+            self.messageManager.setMessage('Saving file(s)',True,messageText)
             self._saveFile()
-            self.messageManager.addMessage('File(s) saved. You may exit the application or continue generating files.',False,messageText)
+            self.messageManager.setMessage('File(s) saved. You may exit the application or continue generating files.',False,messageText)
             isConverting = False#We're done converting; back to idle.
             
         except:#If anything unexpected happens, throw error window with stacktrace
