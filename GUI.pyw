@@ -7,12 +7,10 @@ import threading
 class GUI():
     """ The graphical interface for NiceTabs. Uses the Azure dark theme for tkk."""
     
-    def __init__(self,myConverter):
+    def __init__(self,tab_converter):
         """
-        :param myConverter (TabConverter): The current tab converter
+        :param tab_converter (TabConverter): The current instance of TabConverter
         """
-        self.convertCommand = myConverter.convert
-        self.converter = myConverter
         
         width  = 600
         height = 250
@@ -35,20 +33,20 @@ class GUI():
         self.window.resizable(False,False)
 
         #GUI user options
-        self.generateTex = IntVar()
+        self.generate_tex = IntVar()
 
         #Instantiate elements
         greeting = ttk.Label(text="Paste an ultimate guitar link in the box and hit \"Create\" to create and save a tab as a PDF.\n\n Example: https://tabs.ultimate-guitar.com/tab/darius-rucker/wagon-wheel-chords-1215756\n")
-        createButton = ttk.Button(text="Create")
+        entry_button = ttk.Button(text="Create")
         
-        messageText = StringVar()
-        messageField = ttk.Label(textvariable=messageText)
+        message_text = StringVar()
+        message_field = ttk.Label(textvariable=message_text)
 
         entryText = StringVar()
-        createButton.configure(command=lambda: threading.Thread(target=lambda: self.convertCommand(self.generateTex,entryText,messageText)).start())
+        entry_button.configure(command=lambda: threading.Thread(target=lambda: tab_converter.convert(self.generate_tex,entryText,message_text)).start())
         self.entry = ttk.Entry(width=80, textvariable=entryText)
-        self.entry.bind('<Return>',lambda: threading.Thread(target=lambda: self.convertCommand(self.generateTex,entryText,messageText)).start())
-        check = ttk.Checkbutton(text='Generate .tex file',variable=self.generateTex,onvalue=False,offvalue=True,)
+        self.entry.bind('<Return>',lambda: threading.Thread(target=lambda: tab_converter.convert(self.generate_tex,entryText,message_text)).start())
+        check = ttk.Checkbutton(text='Generate .tex file',variable=self.generate_tex,onvalue=False,offvalue=True,)
         check.invoke()#Make sure the box starts unticked
 
         #Pack elements (order matters!)
@@ -56,8 +54,8 @@ class GUI():
         greeting.pack()
         self.entry.pack()
         ttk.Label().pack()
-        createButton.pack()
+        entry_button.pack()
         check.pack()
-        messageField.pack()
+        message_field.pack()
 
         self.window.mainloop()

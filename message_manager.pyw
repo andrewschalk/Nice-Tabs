@@ -8,7 +8,7 @@ class MessageManager():
     def __init__(self):
         self.events =[]
     
-    def _loadingBar(self,event):
+    def _loading_bar(self,event):
         """Creates a simple loading animation along with the given text.
         :param str (String): The message to display to the user while they wait.
         :param event (Event): The Event object that will be called when loading is finished.
@@ -18,7 +18,7 @@ class MessageManager():
         i=0
         dots=''
         while not event.is_set():#Adds 0 to 3 dots incrementally at the end of the string with a pause between them
-            self.messageText.set(self.str+dots)
+            self.message_text.set(self.str+dots)
             time.sleep(.3)
             dots=dots+'.'
             i+=1
@@ -26,27 +26,27 @@ class MessageManager():
                 i=0
                 dots=''
         
-    def clearMessage(self):
+    def clear_message(self):
         """Clears the message currently being displayed."""
         try:#Sometimes the Event object may not yet be initialized. In this case, there is no message, so no need to clear.
             for event in self.events:
                 event.set()
-                self.messageText.set('')
+                self.message_text.set('')
         except:
             pass
             
-    def setMessage(self,str,isLoading,messageText):
+    def set_message(self,str,is_loading,message_text):
         """Sets the message to be displayed to the user
         :param str (String): The message to be displayed
-        :param isLoading (Boolean): Sets whether the message is accompanied by a loading animation.
-        :param messageText (StringVar): The textvariable that is linked to the Label which displays the message.
+        :param is_loading (Boolean): Sets whether the message is accompanied by a loading animation.
+        :param message_text (StringVar): The textvariable that is linked to the Label which displays the message.
         """
-        self.clearMessage()
+        self.clear_message()
         self.str = str
-        self.messageText = messageText
+        self.message_text = message_text
         event = Event()
         self.events.append(event)
-        if isLoading:
-            threading.Thread(target=lambda: self._loadingBar(event)).start()
+        if is_loading:
+            threading.Thread(target=lambda: self._loading_bar(event)).start()
         else:
-            self.messageText.set(str)
+            self.message_text.set(str)

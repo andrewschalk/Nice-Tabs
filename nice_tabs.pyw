@@ -1,6 +1,6 @@
-import os,sys
-from MessageManager import MessageManager
-from TabConverter import TabConverter
+import os,sys,ctypes
+from message_manager import MessageManager
+from tab_converter import TabConverter
 from GUI import GUI
 
 """ Nice Tabs
@@ -18,9 +18,8 @@ Copyright 2023 Andrew Schalk
             \__/
       
 """
-
 #os.chdir(sys._MEIPASS)#Uncomment for .exe deployment
 
-myMessageManager = MessageManager()
-myConverter = TabConverter(myMessageManager)
-myGUI = GUI(myConverter)#The main thread hangs at this line and will loop forever within GUI to update GUI elements.
+MESSAGE_MANAGER = MessageManager()
+TAB_CONVERTER = TabConverter(MESSAGE_MANAGER)
+MY_GUI = GUI(TAB_CONVERTER)#The main thread hangs at this line and will loop forever within GUI to update GUI elements.
