@@ -32,13 +32,11 @@ class GUI():
         self.window.title('Nice Tabs')
         self.window.resizable(False,False)
 
-        #GUI user options
-        self.generate_tex = IntVar()
-
         #Tkinter thread safe variables
-        message_text  = StringVar()
-        message_field = ttk.Label(textvariable=message_text)
-        entryText     = StringVar()
+        self.generate_tex = IntVar()
+        message_text      = StringVar()
+        message_field     = ttk.Label(textvariable=message_text)
+        entryText         = StringVar()
 
         #Instantiate elements
         greeting     = ttk.Label(text="Paste an ultimate guitar link in the box and hit \"Create\" to create and save a tab as a PDF.\n\n Example: https://tabs.ultimate-guitar.com/tab/darius-rucker/wagon-wheel-chords-1215756\n")

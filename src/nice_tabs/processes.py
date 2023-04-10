@@ -136,17 +136,22 @@ class TabConverter():
                 messagebox.showinfo("Issue!","The URL must link to an Ultimate Guitar tab or chords page.")
                 is_converting = False
                 return
+            
             self.message_manager.set_message('Downloading webpage',True,message_text)
             self._get_website()
+
             self.message_manager.set_message('Generating PDF',True,message_text)
             self._process_HTML()
+
             self.message_manager.set_message('Saving file(s)',True,message_text)
             self._save_file()
+
             self.message_manager.set_message('File(s) saved. You may exit the application or continue generating files.',False,message_text)
             is_converting = False#We're done converting; back to idle.
             
         except:#If anything unexpected happens, throw error window with stacktrace
             messagebox.showerror("Error!","Something went wrong!\n"+traceback.format_exc())
+            print(traceback.format_exc())
             self.driver.quit()
             self.message_manager.clear_message()
             is_converting = False
