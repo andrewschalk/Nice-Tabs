@@ -9,8 +9,6 @@ from selenium.webdriver.edge.service import Service as EdgeService
 from webdriver_manager.microsoft import EdgeChromiumDriverManager
 from tkinter.filedialog import asksaveasfilename
 import traceback
-import stat
-import os
 
 class TabConverter():
     """Retreives data from webpage and creates a PDF.
@@ -29,7 +27,9 @@ class TabConverter():
 
 
     def _get_website(self):
-        """Retreives the webpage from the given URL."""
+        """Retreives the webpage from the given URL.
+        Here we use Microsoft Edge as our browser because every Windows user should have this.
+        """
         options = webdriver.EdgeOptions()
         options.add_argument('--ignore-certificate-errors')#Don't show these errors as we don't care
         options.add_argument('--ignore-ssl-errors')
@@ -50,6 +50,7 @@ class TabConverter():
         options.add_experimental_option("prefs", prefs)
         options.add_experimental_option('excludeSwitches', ['enable-logging'])
 
+        #The driver manager will download the necessary drivers for the version of Edge installed on the system.
         self.driver = webdriver.Edge(service=EdgeService(EdgeChromiumDriverManager().install()),options=options)
         self.driver.get(self.URL)
         
@@ -109,11 +110,11 @@ class TabConverter():
         else:
             messagebox.showinfo("File Not Saved","Please select a file location. Click \"Create\" again to select location.")
 
-    def convert(self,generate_tex,entry_text,messageText):
+    def convert(self,generate_tex,entry_text,message_text):
         """Retreives, processes, and saves the tab given by the user.
         :param generate_tex (boolean): Determines whether a .tex file will be generated.
         :param entry_text (StringVar): The variable that holds the value in the entry field
-        :param messageText (StringVar): The variable that holds the current user message.
+        :param message_text (StringVar): The variable that holds the current user message.
         """
         self.URL = entry_text.get()
         global is_converting
@@ -128,13 +129,13 @@ class TabConverter():
                 messagebox.showinfo("Issue!","The URL must link to an Ultimate Guitar tab or chords page.")
                 is_converting = False
                 return
-            self.message_manager.set_message('Downloading webpage',True,messageText)
+            self.message_manager.set_message('Downloading webpage',True,message_text)
             self._get_website()
-            self.message_manager.set_message('Generating PDF',True,messageText)
+            self.message_manager.set_message('Generating PDF',True,message_text)
             self._process_HTML()
-            self.message_manager.set_message('Saving file(s)',True,messageText)
+            self.message_manager.set_message('Saving file(s)',True,message_text)
             self._save_file()
-            self.message_manager.set_message('File(s) saved. You may exit the application or continue generating files.',False,messageText)
+            self.message_manager.set_message('File(s) saved. You may exit the application or continue generating files.',False,message_text)
             is_converting = False#We're done converting; back to idle.
             
         except:#If anything unexpected happens, throw error window with stacktrace

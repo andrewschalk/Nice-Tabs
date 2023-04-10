@@ -1,4 +1,4 @@
-import os,sys,ctypes
+import os,sys
 from message_manager import MessageManager
 from tab_converter import TabConverter
 from GUI import GUI
