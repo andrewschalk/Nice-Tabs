@@ -9,7 +9,7 @@ Selenium scrapes the data from the given page and they are processed with Beauti
 The data are formatted and sent to a LaTeX compiler which creates the PDF.
 Utilizing the Azure dark theme for tkk, a simple GUI is implemented.
 
-Copyright 2023 Andrew Schalk
+Copyright (c) 2023 Andrew Schalk
 
          /\  __
         /--\/  \

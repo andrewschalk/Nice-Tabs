@@ -106,6 +106,7 @@ class TabConverter():
             try:#Will usually fail if LaTeX compiler failed. Could also fail if saveas path is wrong.
                 self.doc.generate_pdf(file.replace('.pdf',''),clean_tex=self.generate_tex.get(),compiler='venv\\Lib\\site-packages\\pdflatex-0.1.3.dist-info')
             except:
+                print(traceback.format_exc())
                 messagebox.showerror("Error","Something went wrong trying to render or save PDF. \n\n"+traceback.format_exc())
         else:
             messagebox.showinfo("File Not Saved","Please select a file location. Click \"Create\" again to select location.")
@@ -139,8 +140,7 @@ class TabConverter():
             is_converting = False#We're done converting; back to idle.
             
         except:#If anything unexpected happens, throw error window with stacktrace
-            print(traceback.format_exc())
-            #messagebox.showerror("Error!","Something went wrong!\n"+traceback.format_exc())
+            messagebox.showerror("Error!","Something went wrong!\n"+traceback.format_exc())
             self.driver.quit()
             self.message_manager.clear_message()
             is_converting = False
