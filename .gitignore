@@ -1,5 +1,5 @@
 /build
-/__pycache__
+/src/nice_tabs/__pycache__
 /dist
 /venv
 /TinyTex
