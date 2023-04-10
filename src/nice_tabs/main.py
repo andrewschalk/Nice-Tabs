@@ -21,5 +21,5 @@ Copyright (c) 2023 Andrew Schalk
 #os.chdir(sys._MEIPASS)#Uncomment for .exe deployment
 
 MESSAGE_MANAGER = MessageManager()
-TAB_CONVERTER = TabConverter(MESSAGE_MANAGER)
-MY_GUI = GUI(TAB_CONVERTER)#The main thread hangs at this line and will loop forever within GUI to update GUI elements.
+TAB_CONVERTER   = TabConverter(MESSAGE_MANAGER)
+MY_GUI          = GUI(TAB_CONVERTER)#The main thread hangs at this line and will loop forever within GUI to update GUI elements.

@@ -11,17 +11,17 @@ class GUI():
         """
         :param tab_converter (TabConverter): The current instance of TabConverter
         """
-        
+        #The width and height of the window.
         width  = 600
         height = 250
 
         self.window = tk.Tk()
 
-        # get screen width and height
+        #Get screen width and height.
         ws = self.window.winfo_screenwidth()
         hs = self.window.winfo_screenheight()
 
-        # calculate x and y coordinates for the Tk window
+        #Using screen size and window size, find x and y for centering window.
         x = (ws/2) - (width/2)
         y = (hs/2) - (height/2)
 
@@ -35,21 +35,23 @@ class GUI():
         #GUI user options
         self.generate_tex = IntVar()
 
-        #Instantiate elements
-        greeting = ttk.Label(text="Paste an ultimate guitar link in the box and hit \"Create\" to create and save a tab as a PDF.\n\n Example: https://tabs.ultimate-guitar.com/tab/darius-rucker/wagon-wheel-chords-1215756\n")
-        entry_button = ttk.Button(text="Create")
-        
-        message_text = StringVar()
+        #Tkinter thread safe variables
+        message_text  = StringVar()
         message_field = ttk.Label(textvariable=message_text)
+        entryText     = StringVar()
 
-        entryText = StringVar()
+        #Instantiate elements
+        greeting     = ttk.Label(text="Paste an ultimate guitar link in the box and hit \"Create\" to create and save a tab as a PDF.\n\n Example: https://tabs.ultimate-guitar.com/tab/darius-rucker/wagon-wheel-chords-1215756\n")
+        entry_button = ttk.Button(text="Create")
+        check        = ttk.Checkbutton(text='Generate .tex file',variable=self.generate_tex,onvalue=False,offvalue=True)
+        self.entry   = ttk.Entry(width=80, textvariable=entryText)
+
+        #Configure elements
         entry_button.configure(command=lambda: threading.Thread(target=lambda: tab_converter.convert(self.generate_tex,entryText,message_text)).start())
-        self.entry = ttk.Entry(width=80, textvariable=entryText)
         self.entry.bind('<Return>',lambda: threading.Thread(target=lambda: tab_converter.convert(self.generate_tex,entryText,message_text)).start())
-        check = ttk.Checkbutton(text='Generate .tex file',variable=self.generate_tex,onvalue=False,offvalue=True,)
         check.invoke()#Make sure the box starts unticked
 
-        #Pack elements (order matters!)
+        #Pack elements (order matters)
         ttk.Label().pack()
         greeting.pack()
         self.entry.pack()
@@ -58,4 +60,4 @@ class GUI():
         check.pack()
         message_field.pack()
 
-        self.window.mainloop()
+        self.window.mainloop()#Infinite loop to update elements

@@ -14,7 +14,7 @@ class MessageManager():
         :param event (Event): The Event object that will be called when loading is finished.
         """
         time.sleep(.1)#Allows the previous message to clear the screen
-        #event.clear()
+
         i=0
         dots=''
         while not event.is_set():#Adds 0 to 3 dots incrementally at the end of the string with a pause between them
@@ -42,11 +42,14 @@ class MessageManager():
         :param message_text (StringVar): The textvariable that is linked to the Label which displays the message.
         """
         self.clear_message()
-        self.str = str
+
+        self.str          = str
         self.message_text = message_text
+
         event = Event()
         self.events.append(event)
-        if is_loading:
+
+        if is_loading:#If is_loading, then create an animation with the text.
             threading.Thread(target=lambda: self._loading_bar(event)).start()
-        else:
+        else:#Otherwise, just set the static text.
             self.message_text.set(str)

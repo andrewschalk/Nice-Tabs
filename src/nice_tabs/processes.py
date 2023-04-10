@@ -58,18 +58,22 @@ class TabConverter():
         """Processes HTML page after we grab it from the website."""
         try:
             soup = BeautifulSoup(self.driver.page_source, "html.parser")
+
             self.driver.quit()#We've downloaded all needed data, close driver
-            tab_lines = soup.find_all("span", class_="y68er")#Each line of tab is one of these
+
+            tab_lines  = soup.find_all("span", class_="y68er")#Each line of tab is one of these
             self.title = soup.find("h1",class_="dUjZr").text
-            artist = soup.find("a",class_="aPPf7 fcGj5")
+            artist     = soup.find("a",class_="aPPf7 fcGj5")
         except:
-            messagebox.showinfo("Issue!","Something is wrong with the URL you entered.")
+            messagebox.showinfo("Issue!","Something is wrong with the URL you entered. Please try again.")
             self.driver.quit()
             is_converting = False
             return
 
         cf.active = cf.Version1(indent=False)
+
         self.doc = Document('basic')
+
         self.doc.preamble.append(Package('geometry','margin=0.5in'))
         self.doc.preamble.append(NoEscape('\setlength{\parskip}{-.4em}'))
         self.doc.preamble.append(NoEscape('\pagenumbering{gobble}'))
@@ -77,7 +81,7 @@ class TabConverter():
         self.doc.preamble.append(Package('courier'))
         self.doc.preamble.append(NoEscape('\\renewcommand*\\familydefault{\\ttdefault}'))
 
-        try:
+        try:#An exception here could mean that the user entered a URL that gives a page that doesn't have the expected HTML elements.
             self.doc.append(NoEscape('\\begin{center}\\begin{large}'+self.title.replace('Chords','').replace('Tab','')+'\\end{large}\\\\by '+artist.text+'\\end{center}\\vspace{1em}'))
         except:
             messagebox.showinfo("Issue!","Something may be wrong with the URL you entered. Please try again.")
@@ -90,13 +94,15 @@ class TabConverter():
                 self.doc.append(NoEscape('\\vspace{1em}'))
             else:
                 space_count = 0
-                if '[' in tab_line.text:
+                if '[' in tab_line.text:#If a [verse] or [chorus] line, then give this line some vertical space and don't let page break here.
                     self.doc.append(NoEscape('\\vspace{.4em}'))
                     self.doc.append(NoEscape('\\par\\needspace{2\\baselineskip}'))
                 else:
-                    if (tab_line.text.count(' ')>len(tab_line.text)/2) or len(tab_line.text)<5:
+                    if (tab_line.text.count(' ')>len(tab_line.text)/2) or len(tab_line.text)<5:# If this line is a "chord" line then give it some space above.
                         self.doc.append(NoEscape('\\par\\needspace{\\baselineskip}'))
                         self.doc.append(NoEscape('\\vspace{.6em}'))
+
+                #Replaces all special characters with their LaTeX display codes. Otherwise latex treats them as markup and not text.
                 self.doc.append(NoEscape(tab_line.text.replace('\\','\\textbackslash').replace(' ','\space ').replace('#','\\#').replace('_','\\_').replace('-','-{}')))
 
     def _save_file(self):
