@@ -1,7 +1,7 @@
 import os,sys
 from message_systems import MessageManager
 from processes import TabConverter
-from interfaces import GUI
+from user_interfaces import GUI
 
 """ Nice Tabs
 This program allows the user to convert an Ultimate Guitar webpage containing a tab to a clean printable PDF.

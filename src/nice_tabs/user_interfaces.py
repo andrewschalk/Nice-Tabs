@@ -32,6 +32,11 @@ class GUI():
         self.window.title('Nice Tabs')
         self.window.resizable(False,False)
 
+        #right-click paste menu for entry
+        self.menu = Menu(self.window,tearoff=0) # Create a menu
+        self.menu.add_command(label='Paste',command=self.paste)
+
+
         #Tkinter thread safe variables
         self.generate_tex = IntVar()
         message_text      = StringVar()
@@ -47,6 +52,7 @@ class GUI():
         #Configure elements
         entry_button.configure(command=lambda: threading.Thread(target=lambda: tab_converter.convert(self.generate_tex,entryText,message_text)).start())
         self.entry.bind('<Return>',lambda: threading.Thread(target=lambda: tab_converter.convert(self.generate_tex,entryText,message_text)).start())
+        self.entry.bind('<Button-3>',self.popup)
         check.invoke()#Make sure the box starts unticked
 
         #Pack elements (order matters)
@@ -59,3 +65,15 @@ class GUI():
         message_field.pack()
 
         self.window.mainloop()#Infinite loop to update elements
+
+    def popup(self,event):
+        """Creates a small popup window when entry is right-clicked, to allow user to paste"""
+        try:
+            self.menu.tk_popup(event.x_root,event.y_root) # Pop the menu up in the given coordinates
+        finally:
+            self.menu.grab_release() # Release it once an option is selected
+    
+    def paste(self):
+        """Part of the right-click context window. Pastes clipboard text into entry"""
+        clipboard = self.window.clipboard_get() # Get the copied item from system clipboard
+        self.entry.insert('end',clipboard) # Insert the item into the entry widget
