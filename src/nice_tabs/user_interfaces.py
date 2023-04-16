@@ -1,8 +1,10 @@
 import tkinter as tk
+import threading
+
 from tkinter import IntVar,ttk
 from tkinter import *
 from tkinter.ttk import *
-import threading
+
 
 class GUI():
     """ The graphical interface for NiceTabs. Uses the Azure dark theme for tkk."""

@@ -8,7 +8,7 @@ a = Analysis(
     ['src\\nice_tabs\\main.py'],
     pathex=[],
     binaries=[],
-    datas=[('./Azure', './Azure')],
+    datas=[('./Azure', './Azure'),('nice_tabs.ico','nice_tabs.ico')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -41,4 +41,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    icon=['nice_tabs.ico'],
 )

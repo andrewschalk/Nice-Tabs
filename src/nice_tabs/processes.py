@@ -8,6 +8,8 @@ from selenium.webdriver.edge.service import Service as EdgeService
 from webdriver_manager.microsoft import EdgeChromiumDriverManager
 from tkinter.filedialog import asksaveasfilename
 from pdflatex import PDFLaTeX
+from subprocess import CREATE_NO_WINDOW
+
 import traceback
 import os
 import pylatex.config as cf
@@ -53,7 +55,9 @@ class TabConverter():
         options.add_experimental_option('excludeSwitches', ['enable-logging'])
 
         #The driver manager will download the necessary drivers for the version of Edge installed on the system.
-        self.driver = webdriver.Edge(service=EdgeService(EdgeChromiumDriverManager().install()),options=options)
+        edge_service = EdgeService(EdgeChromiumDriverManager().install())
+        edge_service.creation_flags = CREATE_NO_WINDOW
+        self.driver = webdriver.Edge(service=edge_service,options=options)
         self.driver.get(self.URL)
         
     def _process_HTML(self):
@@ -95,7 +99,6 @@ class TabConverter():
             if len(tab_line.text) <4:
                 self.doc.append(NoEscape('\\vspace{1em}'))
             else:
-                space_count = 0
                 if '[' in tab_line.text:#If a [verse] or [chorus] line, then give this line some vertical space and don't let page break here.
                     self.doc.append(NoEscape('\\vspace{.4em}'))
                     self.doc.append(NoEscape('\\par\\needspace{2\\baselineskip}'))
