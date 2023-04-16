@@ -33,7 +33,7 @@ class GUI():
         self.window.resizable(False,False)
 
         #right-click paste menu for entry
-        self.menu = Menu(self.window,tearoff=0) # Create a menu
+        self.menu = Menu(self.window,tearoff=0)
         self.menu.add_command(label='Paste',command=self.paste)
 
 
@@ -69,11 +69,11 @@ class GUI():
     def popup(self,event):
         """Creates a small popup window when entry is right-clicked, to allow user to paste"""
         try:
-            self.menu.tk_popup(event.x_root,event.y_root) # Pop the menu up in the given coordinates
+            self.menu.tk_popup(event.x_root,event.y_root)
         finally:
-            self.menu.grab_release() # Release it once an option is selected
+            self.menu.grab_release()
     
     def paste(self):
         """Part of the right-click context window. Pastes clipboard text into entry"""
-        clipboard = self.window.clipboard_get() # Get the copied item from system clipboard
-        self.entry.insert('end',clipboard) # Insert the item into the entry widget
+        clipboard = self.window.clipboard_get()
+        self.entry.insert('end',clipboard)
