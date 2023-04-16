@@ -110,7 +110,7 @@ class TabConverter():
         file = asksaveasfilename(defaultextension = '.pdf',initialfile=self.title,filetypes=[("PDF Doc", "*.pdf")])
         if file:#If user selected a file path
             try:#Will usually fail if LaTeX compiler failed. Could also fail if saveas path is wrong.
-                self.doc.generate_pdf(file.replace('.pdf',''),clean_tex=self.generate_tex.get(),compiler='venv\\Lib\\site-packages\\pdflatex-0.1.3.dist-info')
+                self.doc.generate_pdf(file.replace('.pdf',''),clean_tex=self.generate_tex.get(),compiler='venv\\Lib\\site-packages\\latexmk.py-0.4-py3.11.egg-info')
             except:
                 print(traceback.format_exc())
                 messagebox.showerror("Error","Something went wrong trying to render or save PDF. \n\n"+traceback.format_exc())
