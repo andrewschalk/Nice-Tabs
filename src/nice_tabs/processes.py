@@ -9,6 +9,8 @@ from selenium.webdriver.edge.service import Service as EdgeService
 from webdriver_manager.microsoft import EdgeChromiumDriverManager
 from tkinter.filedialog import asksaveasfilename
 import traceback
+from pdflatex import PDFLaTeX
+import os
 
 class TabConverter():
     """Retreives data from webpage and creates a PDF.
@@ -110,7 +112,12 @@ class TabConverter():
         file = asksaveasfilename(defaultextension = '.pdf',initialfile=self.title,filetypes=[("PDF Doc", "*.pdf")])
         if file:#If user selected a file path
             try:#Will usually fail if LaTeX compiler failed. Could also fail if saveas path is wrong.
-                self.doc.generate_pdf(file.replace('.pdf',''),clean_tex=self.generate_tex.get(),compiler='venv\\Lib\\site-packages\\latexmk.py-0.4-py3.11.egg-info')
+                self.doc.generate_tex(file.replace('.pdf',''))
+                pdf = PDFLaTeX.from_texfile(file.replace('.pdf','.tex'))#Create pdf binary
+                pdf.set_output_directory(os.path.dirname(file))
+                pdf.create_pdf(keep_pdf_file=True)
+                if self.generate_tex.get():#If not generating tex file then delete once we are done with it
+                    os.remove(file.replace('.pdf','.tex'))
             except:
                 print(traceback.format_exc())
                 messagebox.showerror("Error","Something went wrong trying to render or save PDF. \n\n"+traceback.format_exc())
@@ -119,7 +126,7 @@ class TabConverter():
 
     def convert(self,generate_tex,entry_text,message_text):
         """Retreives, processes, and saves the tab given by the user.
-        :param generate_tex (boolean): Determines whether a .tex file will be generated.
+        :param generate_tex (IntVar): Determines whether a .tex file will be generated.
         :param entry_text (StringVar): The variable that holds the value in the entry field
         :param message_text (StringVar): The variable that holds the current user message.
         """
