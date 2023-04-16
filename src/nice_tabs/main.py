@@ -21,7 +21,7 @@ from user_interfaces import GUI
             \__/
       
 """
-os.chdir(sys._MEIPASS)#Uncomment for .exe deployment
+#os.chdir(sys._MEIPASS)#Uncomment for .exe deployment
 
 MESSAGE_MANAGER = MessageManager()
 TAB_CONVERTER   = TabConverter(MESSAGE_MANAGER)

@@ -34,6 +34,8 @@ class TabConverter():
         """Retreives the webpage from the given URL.
         Here we use Microsoft Edge as our browser because every Windows user should have this.
         """
+        self.message_manager.set_message('Downloading webpage',True,self.message_text)
+        
         options = webdriver.EdgeOptions()
         options.add_argument('--ignore-certificate-errors')#Don't show these errors as we don't care
         options.add_argument('--ignore-ssl-errors')
@@ -59,9 +61,11 @@ class TabConverter():
         edge_service.creation_flags = CREATE_NO_WINDOW
         self.driver = webdriver.Edge(service=edge_service,options=options)
         self.driver.get(self.URL)
+        self.message_manager.clear_message()
         
     def _process_HTML(self):
         """Processes HTML page after we grab it from the website."""
+        self.message_manager.set_message('Generating PDF',True,self.message_text)
         try:
             soup = BeautifulSoup(self.driver.page_source, "html.parser")
 
@@ -72,6 +76,7 @@ class TabConverter():
             artist     = soup.find("a",class_="aPPf7 fcGj5")
         except:
             messagebox.showinfo("Issue!","Something is wrong with the URL you entered. Please try again.")
+            self.message_manager.clear_message()
             self.driver.quit()
             is_converting = False
             return
@@ -91,6 +96,7 @@ class TabConverter():
             self.doc.append(NoEscape('\\begin{center}\\begin{large}'+self.title.replace('Chords','').replace('Tab','')+'\\end{large}\\\\by '+artist.text+'\\end{center}\\vspace{1em}'))
         except:
             messagebox.showinfo("Issue!","Something may be wrong with the URL you entered. Please try again.")
+            self.message_manager.clear_message()
             is_converting = False
             return
 
@@ -109,24 +115,28 @@ class TabConverter():
 
                 #Replaces all special characters with their LaTeX display codes. Otherwise latex treats them as markup and not text.
                 self.doc.append(NoEscape(tab_line.text.replace('\\','\\textbackslash').replace(' ','\space ').replace('#','\\#').replace('_','\\_').replace('-','-{}')))
+        self.message_manager.clear_message()
 
     def _save_file(self):
         """Prompts the user where to save the file. Then saves the file."""
+        self.message_manager.set_message('Saving file(s)',True,self.message_text)
         file = asksaveasfilename(defaultextension = '.pdf',initialfile=self.title,filetypes=[("PDF Doc", "*.pdf")])
         if file:#If user selected a file path
             try:#Will usually fail if LaTeX compiler failed. Could also fail if saveas path is wrong.
                 self.doc.generate_tex(file.replace('.pdf',''))
-                pdf = PDFLaTeX.from_texfile(file.replace('.pdf','.tex'))#Create pdf binary
+                pdf = PDFLaTeX.from_texfile(file.replace('.pdf','.tex'))#Create pdf binary from tex file
                 pdf.set_output_directory(os.path.dirname(file))
                 pdf.create_pdf(keep_pdf_file=True)
                 if self.generate_tex.get():#If not generating tex file then delete once we are done with it
                     os.remove(file.replace('.pdf','.tex'))
+                self.message_manager.set_message('File(s) saved. You may exit the application or continue generating files.',False,self.message_text)
             except:
                 print(traceback.format_exc())
+                self.message_manager.clear_message()
                 messagebox.showerror("Error","Something went wrong trying to render or save PDF. \n\n"+traceback.format_exc())
         else:
+            self.message_manager.clear_message()
             messagebox.showinfo("File Not Saved","Please select a file location. Click \"Create\" again to select location.")
-
     def convert(self,generate_tex,entry_text,message_text):
         """Retreives, processes, and saves the tab given by the user.
         :param generate_tex (IntVar): Determines whether a .tex file will be generated.
@@ -134,6 +144,7 @@ class TabConverter():
         :param message_text (StringVar): The variable that holds the current user message.
         """
         self.URL = entry_text.get()
+        self.message_text = message_text
         global is_converting
         if is_converting:
             return
@@ -147,16 +158,10 @@ class TabConverter():
                 is_converting = False
                 return
             
-            self.message_manager.set_message('Downloading webpage',True,message_text)
             self._get_website()
-
-            self.message_manager.set_message('Generating PDF',True,message_text)
             self._process_HTML()
-
-            self.message_manager.set_message('Saving file(s)',True,message_text)
             self._save_file()
 
-            self.message_manager.set_message('File(s) saved. You may exit the application or continue generating files.',False,message_text)
             is_converting = False#We're done converting; back to idle.
             
         except:#If anything unexpected happens, throw error window with stacktrace
