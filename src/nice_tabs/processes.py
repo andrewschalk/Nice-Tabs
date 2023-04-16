@@ -1,16 +1,16 @@
 from selenium import webdriver
 from bs4 import BeautifulSoup
 from pylatex import Document
-import pylatex.config as cf
 from pylatex.package import Package
 from pylatex.utils import NoEscape
 from tkinter import messagebox
 from selenium.webdriver.edge.service import Service as EdgeService
 from webdriver_manager.microsoft import EdgeChromiumDriverManager
 from tkinter.filedialog import asksaveasfilename
-import traceback
 from pdflatex import PDFLaTeX
+import traceback
 import os
+import pylatex.config as cf
 
 class TabConverter():
     """Retreives data from webpage and creates a PDF.
