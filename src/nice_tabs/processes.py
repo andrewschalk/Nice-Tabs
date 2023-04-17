@@ -137,13 +137,14 @@ class TabConverter():
         else:
             self.message_manager.clear_message()
             messagebox.showinfo("File Not Saved","Please select a file location. Click \"Create\" again to select location.")
+
     def convert(self,generate_tex,entry_text,message_text):
         """Retreives, processes, and saves the tab given by the user.
-        :param generate_tex (IntVar): Determines whether a .tex file will be generated.
-        :param entry_text (StringVar): The variable that holds the value in the entry field
+        :param generate_tex (IntVar)   : Determines whether a .tex file will be generated.
+        :param entry_text   (StringVar): The variable that holds the value in the entry field
         :param message_text (StringVar): The variable that holds the current user message.
         """
-        self.URL = entry_text.get()
+        self.URL          = entry_text.get()
         self.message_text = message_text
         global is_converting
         if is_converting:
