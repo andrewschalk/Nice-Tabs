@@ -77,8 +77,6 @@ class TabConverter():
         except:
             messagebox.showinfo("Issue!","Something is wrong with the URL you entered. Please try again.")
             self.message_manager.clear_message()
-            self.driver.quit()
-            is_converting = False
             return
 
         cf.active = cf.Version1(indent=False)
@@ -97,7 +95,6 @@ class TabConverter():
         except:
             messagebox.showinfo("Issue!","Something may be wrong with the URL you entered. Please try again.")
             self.message_manager.clear_message()
-            is_converting = False
             return
 
         for tab_line in tab_lines:
@@ -119,14 +116,14 @@ class TabConverter():
 
     def _save_file(self):
         """Prompts the user where to save the file. Then saves the file."""
-        self.message_manager.set_message('Saving file(s)',True,self.message_text)
         file = asksaveasfilename(defaultextension = '.pdf',initialfile=self.title,filetypes=[("PDF Doc", "*.pdf")])
+        self.message_manager.set_message('Saving file(s)',True,self.message_text)
         if file:#If user selected a file path
             try:#Will usually fail if LaTeX compiler failed. Could also fail if saveas path is wrong.
                 self.doc.generate_tex(file.replace('.pdf',''))
                 pdf = PDFLaTeX.from_texfile(file.replace('.pdf','.tex'))#Create pdf binary from tex file
                 pdf.set_output_directory(os.path.dirname(file))
-                pdf.create_pdf(keep_pdf_file=True)
+                pdf.create_pdf(keep_pdf_file=True,env= dict(shell='True'))
                 if self.generate_tex.get():#If not generating tex file then delete once we are done with it
                     os.remove(file.replace('.pdf','.tex'))
                 self.message_manager.set_message('File(s) saved. You may exit the application or continue generating files.',False,self.message_text)
@@ -167,6 +164,7 @@ class TabConverter():
         except:#If anything unexpected happens, throw error window with stacktrace
             messagebox.showerror("Error!","Something went wrong!\n"+traceback.format_exc())
             print(traceback.format_exc())
-            self.driver.quit()
             self.message_manager.clear_message()
+        finally:
+            self.driver.quit()
             is_converting = False

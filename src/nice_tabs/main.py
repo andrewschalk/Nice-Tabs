@@ -19,7 +19,7 @@ from user_interfaces import GUI
        /    \__
                \
             \__/
-      
+
 """
 #os.chdir(sys._MEIPASS)#Uncomment for .exe deployment
 
