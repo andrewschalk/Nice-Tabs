@@ -10,8 +10,8 @@ class MessageManager():
     
     def _loading_bar(self,event):
         """Creates a simple loading animation along with the given text.
-        :param str (String): The message to display to the user while they wait.
-        :param event (Event): The Event object that will be called when loading is finished.
+        :param str   (String): The message to display to the user while they wait.
+        :param event (Event) : The Event object that will be called when loading is finished.
         """
         time.sleep(.1)#Allows the previous message to clear the screen
 
@@ -38,8 +38,8 @@ class MessageManager():
             
     def set_message(self,str,is_loading,message_text):
         """Sets the message to be displayed to the user
-        :param str (String): The message to be displayed
-        :param is_loading (Boolean): Sets whether the message is accompanied by a loading animation.
+        :param str          (String)   : The message to be displayed
+        :param is_loading   (Boolean)  : Sets whether the message is accompanied by a loading animation.
         :param message_text (StringVar): The textvariable that is linked to the Label which displays the message.
         """
         self.clear_message()
