@@ -62,6 +62,7 @@ class TabConverter():
         self.driver = webdriver.Edge(service=edge_service,options=options)
         self.driver.get(self.URL)
         self.message_manager.clear_message()
+        return True
         
     def _process_HTML(self):
         """Processes HTML page after we grab it from the website."""
@@ -75,9 +76,9 @@ class TabConverter():
             self.title = soup.find("h1",class_="dUjZr").text
             artist     = soup.find("a",class_="aPPf7 fcGj5")
         except:
-            messagebox.showinfo("Issue!","Something is wrong with the URL you entered. Please try again.")
             self.message_manager.clear_message()
-            return
+            messagebox.showinfo("Issue!","Something is wrong with the URL you entered. Please try again.")
+            return False
 
         cf.active = cf.Version1(indent=False)
 
@@ -93,9 +94,9 @@ class TabConverter():
         try:#An exception here could mean that the user entered a URL that gives a page that doesn't have the expected HTML elements.
             self.doc.append(NoEscape('\\begin{center}\\begin{large}'+self.title.replace('Chords','').replace('Tab','')+'\\end{large}\\\\by '+artist.text+'\\end{center}\\vspace{1em}'))
         except:
-            messagebox.showinfo("Issue!","Something may be wrong with the URL you entered. Please try again.")
             self.message_manager.clear_message()
-            return
+            messagebox.showinfo("Issue!","Something may be wrong with the URL you entered. Please try again.")
+            return False
 
         for tab_line in tab_lines:
             """"This is all the formatting for the lines of the tab. This determines how each line is placed"""
@@ -113,6 +114,7 @@ class TabConverter():
                 #Replaces all special characters with their LaTeX display codes. Otherwise latex treats them as markup and not text.
                 self.doc.append(NoEscape(tab_line.text.replace('\\','\\textbackslash').replace(' ','\space ').replace('#','\\#').replace('_','\\_').replace('-','-{}')))
         self.message_manager.clear_message()
+        return True
 
     def _save_file(self):
         """Prompts the user where to save the file. Then saves the file."""
@@ -134,10 +136,11 @@ class TabConverter():
             except:
                 print(traceback.format_exc())
                 self.message_manager.clear_message()
-                messagebox.showerror("Error","Something went wrong trying to render or save PDF. \n\n"+traceback.format_exc())
+                messagebox.showerror("Fatal Error","Something went wrong trying to render or save PDF. \n\n"+traceback.format_exc())
         else:
             self.message_manager.clear_message()
             messagebox.showinfo("File Not Saved","Please select a file location. Click \"Create\" again to select location.")
+        return True
 
     def convert(self,generate_tex,entry_text,message_text):
         """Retreives, processes, and saves the tab given by the user.
@@ -149,7 +152,7 @@ class TabConverter():
         self.message_text = message_text
         global is_converting
         if is_converting:
-            return
+            return False
         
         self.generate_tex = generate_tex
         try:
@@ -158,19 +161,24 @@ class TabConverter():
             if 'tabs.ultimate-guitar.com' not in self.URL:#If not ultimate guitar website
                 messagebox.showinfo("Issue!","The URL must link to an Ultimate Guitar tab or chords page.")
                 is_converting = False
-                return
+                return False
             
-            self._get_website()
-            self._process_HTML()
-            self._save_file()
+            if not self._get_website():
+                return
+            if not self._process_HTML():
+                return
+            if not self._save_file():
+                return
 
             is_converting = False#We're done converting; back to idle.
             
         except:#If anything unexpected happens, throw error window with stacktrace
-            messagebox.showerror("Error!","Something went wrong!\n"+traceback.format_exc())
+            messagebox.showerror("Fatal Error!","Something went wrong!\n"+traceback.format_exc())
             print(traceback.format_exc())
             self.message_manager.clear_message()
         finally:
-            if self.driver is not None:
+            try:
                 self.driver.quit()
-                is_converting = False
+            except:
+                pass
+            is_converting = False
