@@ -123,7 +123,7 @@ class TabConverter():
                 self.doc.generate_tex(file.replace('.pdf',''))
                 pdf = PDFLaTeX.from_texfile(file.replace('.pdf','.tex'))#Create pdf binary from tex file
                 pdf.set_output_directory(os.path.dirname(file))
-                pdf.create_pdf(keep_pdf_file=True,env= dict(shell='True'))
+                pdf.create_pdf(keep_pdf_file=True)
                 if self.generate_tex.get():#If not generating tex file then delete once we are done with it
                     os.remove(file.replace('.pdf','.tex'))
                 self.message_manager.set_message('File(s) saved. You may exit the application or continue generating files.',False,self.message_text)
