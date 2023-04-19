@@ -171,5 +171,6 @@ class TabConverter():
             print(traceback.format_exc())
             self.message_manager.clear_message()
         finally:
-            self.driver.quit()
-            is_converting = False
+            if self.driver is not None:
+                self.driver.quit()
+                is_converting = False

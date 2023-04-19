@@ -15,7 +15,7 @@ class GUI():
         """
         #The width and height of the window.
         width  = 600
-        height = 250
+        height = 257
 
         self.window = tk.Tk()
 
@@ -62,8 +62,9 @@ class GUI():
         greeting.pack()
         self.entry.pack()
         ttk.Label().pack()
-        entry_button.pack()
         check.pack()
+        ttk.Label().pack()
+        entry_button.pack()
         message_field.pack()
 
         self.window.mainloop()#Infinite loop to update elements
