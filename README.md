@@ -2,9 +2,9 @@
 <p>
 <img alt="GitHub" src="https://img.shields.io/github/license/andrewschalk/Nice-Tabs"/>
   </p>
-A GUI based application that allows users to download Ultimate Guitar tabs and chords into a clean printable PDF. Tested with Windows 10 but should work on most systems including Mac OS and Linux distros.
+A GUI based application that allows users to download Ultimate Guitar tabs and chords into a clean printable PDF. Tested with Windows 10 but should work on most systems that run python including Mac OS and Linux distros. Nice Tabs comes packaged with a compact version of LiveTeX so the user is not required to have a LaTeX compiler installed.
 
-## Installation Instructions
+### Installation Instructions
 The runnable .exe is still a work in progress and is currently flagged as a virus by windows defender. To run the program you will need to first clone the repository in your favorite Python IDE and then follow these steps. Requires Python 3.
 1. Create virtual environment in the repository's root directory: ```python -m venv venv```
 2. Activate the virtual environment and select the virtual environment's python interpreter: Many IDEs will do this automatically when you start a new terminal after creating a virtual environment. The best way to do this will vary based on your IDE.
