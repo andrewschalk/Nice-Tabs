@@ -21,8 +21,9 @@ class TabConverter():
     The user can choose whether to keep the .tex file using a checkbox.
     The user is then prompted for where to save the file and the file is saved.
     """
-    global is_converting
-    is_converting = False#False when application is idle, True when converting
+    global is_converting, has_webdrivers
+    is_converting  = False#False when application is idle, True when converting
+    has_webdrivers = False#Will be false until webdrivers have been downloaded
 
     def __init__(self,message_manager):
         """
@@ -30,13 +31,8 @@ class TabConverter():
         """
         self.message_manager = message_manager
 
-
-    def _get_website(self):
-        """Retreives the webpage from the given URL.
-        Here we use Microsoft Edge as our browser because every Windows user should have this.
-        """
-        self.message_manager.set_message('Downloading webpage',True,self.message_text)
-        
+    def initialize_web_driver(self):
+        global has_webdrivers
         options = webdriver.EdgeOptions()
         options.add_argument('--ignore-certificate-errors')#Don't show these errors as we don't care
         options.add_argument('--ignore-ssl-errors')
@@ -61,6 +57,15 @@ class TabConverter():
         edge_service = EdgeService(EdgeChromiumDriverManager().install())
         edge_service.creation_flags = CREATE_NO_WINDOW
         self.driver = webdriver.Edge(service=edge_service,options=options)
+        has_webdrivers = True
+
+
+    def _get_website(self):
+        """Retreives the webpage from the given URL.
+        Here we use Microsoft Edge as our browser because every Windows user should have this.
+        """
+
+        self.message_manager.set_message('Downloading webpage',True,self.message_text)
         self.driver.get(self.URL)
         self.message_manager.clear_message()
         return True
@@ -142,7 +147,7 @@ class TabConverter():
         """
         self.URL          = entry_text.get()
         self.message_text = message_text
-        global is_converting
+        global is_converting,has_webdrivers
         if is_converting:
             return False
         
@@ -154,7 +159,10 @@ class TabConverter():
                 messagebox.showinfo('Issue!',"The URL must link to an Ultimate Guitar tab or chords page.")
                 is_converting = False
                 return False
-            
+            if not has_webdrivers:
+                self.message_manager.set_message("Finishing first time setup",True,self.message_text)
+                while not has_webdrivers:
+                    pass
             if not self._get_website():
                 return
             if not self._process_HTML():

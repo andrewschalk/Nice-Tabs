@@ -1,4 +1,4 @@
-import os,sys,io
+import os,sys,io,threading
 from message_systems import MessageManager
 from processes import TabConverter
 from user_interfaces import GUI
@@ -23,11 +23,14 @@ from user_interfaces import GUI
 """
 os.chdir(sys._MEIPASS)#Uncomment for .exe deployment
 
-# This stuff catches anything meant for the terminal and stops it from crashing exe
+#This stuff catches anything meant for the terminal and stops it from crashing the exe
 buffer = io.StringIO()
 sys.stdout = buffer
 sys.stderr = buffer
 
 MESSAGE_MANAGER = MessageManager()
 TAB_CONVERTER   = TabConverter(MESSAGE_MANAGER)
-MY_GUI          = GUI(TAB_CONVERTER)#The main thread hangs at this line and will loop forever within GUI to update GUI elements.
+
+threading.Thread(target=TAB_CONVERTER.initialize_web_driver()).start()#Begin downloading webdrivers so user will not have to wait.
+
+MY_GUI = GUI(TAB_CONVERTER)#The main thread hangs at this line and will loop forever within GUI to update GUI elements.
