@@ -1,4 +1,4 @@
-import os,sys
+import os,sys,io
 from message_systems import MessageManager
 from processes import TabConverter
 from user_interfaces import GUI
@@ -22,6 +22,11 @@ from user_interfaces import GUI
 
 """
 os.chdir(sys._MEIPASS)#Uncomment for .exe deployment
+
+# This stuff catches anything meant for the terminal and stops it from crashing exe
+buffer = io.StringIO()
+sys.stdout = buffer
+sys.stderr = buffer
 
 MESSAGE_MANAGER = MessageManager()
 TAB_CONVERTER   = TabConverter(MESSAGE_MANAGER)
