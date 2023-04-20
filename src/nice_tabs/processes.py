@@ -123,7 +123,7 @@ class TabConverter():
         self.message_manager.set_message("Saving file(s)",True,self.message_text)
         if file:#If user selected a file path
             try:#Will usually fail if LaTeX compiler failed. Could also fail if saveas path is wrong.
-                self.doc.generate_pdf(file.replace('.pdf',''),compiler='D:\\ProgrammingProjects\\Nice-Tabs\\TinyTex\\bin\\windows\\pdflatex.exe',clean_tex=self.generate_tex)
+                self.doc.generate_pdf(file.replace('.pdf',''),compiler='TinyTex\\bin\\windows\\pdflatex.exe',clean_tex=self.generate_tex)
                 self.message_manager.set_message("File(s) saved. You may exit the application or continue generating files.",False,self.message_text)
             except:
                 print(traceback.format_exc())
