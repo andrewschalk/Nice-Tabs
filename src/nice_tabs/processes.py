@@ -9,6 +9,7 @@ from webdriver_manager.microsoft import EdgeChromiumDriverManager
 from tkinter.filedialog import asksaveasfilename
 from pdflatex import PDFLaTeX
 from subprocess import CREATE_NO_WINDOW
+import subprocess
 
 import traceback
 import os
@@ -122,16 +123,7 @@ class TabConverter():
         self.message_manager.set_message("Saving file(s)",True,self.message_text)
         if file:#If user selected a file path
             try:#Will usually fail if LaTeX compiler failed. Could also fail if saveas path is wrong.
-                self.doc.generate_tex(file.replace('.pdf',''))
-
-                #pdf_latex = PDFLaTeX(os.path.basename(file.replace('.pdf','')))
-                #pdf_latex.add_args(params = dict(shell = True))
-
-                pdf_latex = PDFLaTeX.from_texfile(file.replace('.pdf','.tex'))#Use helper to pass .tex location and create PDFLaTeX instance
-                pdf_latex.set_output_directory(os.path.dirname(file))
-                pdf_latex.create_pdf(keep_pdf_file=True)
-                if self.generate_tex.get():#If not generating tex file then delete once we are done with it
-                    os.remove(file.replace('.pdf','.tex'))
+                self.doc.generate_pdf(file.replace('.pdf',''),compiler='D:\\ProgrammingProjects\\Nice-Tabs\\TinyTex\\bin\\windows\\pdflatex.exe',clean_tex=self.generate_tex)
                 self.message_manager.set_message("File(s) saved. You may exit the application or continue generating files.",False,self.message_text)
             except:
                 print(traceback.format_exc())
