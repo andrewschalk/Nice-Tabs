@@ -40,7 +40,7 @@ class TabConverter():
         options.add_argument('--ignore-certificate-errors')#Don't show these errors as we don't care
         options.add_argument('--ignore-ssl-errors')
         options.add_argument('--headless=new')#Run in headless mode. '=new' fixes massive download time issue
-        options.add_argument("--window-size=1920,1200")
+        options.add_argument('--window-size=1920,1200')
 
         #Don't download unnecessary GUI data
         prefs = {"profile.managed_default_content_settings.images":2,
@@ -53,7 +53,7 @@ class TabConverter():
          "profile.managed_default_content_settings.geolocation":2,
          "profile.managed_default_content_settings.media_stream":2,
         }
-        options.add_experimental_option("prefs", prefs)
+        options.add_experimental_option('prefs', prefs)
         options.add_experimental_option('excludeSwitches', ['enable-logging'])
 
         #The driver manager will download the necessary drivers for the version of Edge installed on the system.
@@ -66,18 +66,18 @@ class TabConverter():
         
     def _process_HTML(self):
         """Processes HTML page after we grab it from the website."""
-        self.message_manager.set_message('Generating PDF',True,self.message_text)
+        self.message_manager.set_message("Generating PDF",True,self.message_text)
         try:
-            soup = BeautifulSoup(self.driver.page_source, "html.parser")
+            soup = BeautifulSoup(self.driver.page_source, 'html.parser')
 
             self.driver.quit()#We've downloaded all needed data, close driver
 
-            tab_lines  = soup.find_all("span", class_="y68er")#Each line of tab is one of these
-            self.title = soup.find("h1",class_="dUjZr").text
-            artist     = soup.find("a",class_="aPPf7 fcGj5")
+            tab_lines  = soup.find_all('span', class_='y68er')#Each line of tab is one of these
+            self.title = soup.find('h1',class_='dUjZr').text
+            artist     = soup.find('a',class_='aPPf7 fcGj5')
         except:
             self.message_manager.clear_message()
-            messagebox.showinfo("Issue!","Something is wrong with the URL you entered. Please try again.")
+            messagebox.showinfo('Issue!',"Something is wrong with the URL you entered. Please try again.")
             return False
 
         cf.active = cf.Version1(indent=False)
@@ -95,7 +95,7 @@ class TabConverter():
             self.doc.append(NoEscape('\\begin{center}\\begin{large}'+self.title.replace('Chords','').replace('Tab','')+'\\end{large}\\\\by '+artist.text+'\\end{center}\\vspace{1em}'))
         except:
             self.message_manager.clear_message()
-            messagebox.showinfo("Issue!","Something may be wrong with the URL you entered. Please try again.")
+            messagebox.showinfo('Issue!',"Something may be wrong with the URL you entered. Please try again.")
             return False
 
         for tab_line in tab_lines:
@@ -119,7 +119,7 @@ class TabConverter():
     def _save_file(self):
         """Prompts the user where to save the file. Then saves the file."""
         file = asksaveasfilename(defaultextension = '.pdf',initialfile=self.title,filetypes=[("PDF Doc", "*.pdf")])
-        self.message_manager.set_message('Saving file(s)',True,self.message_text)
+        self.message_manager.set_message("Saving file(s)",True,self.message_text)
         if file:#If user selected a file path
             try:#Will usually fail if LaTeX compiler failed. Could also fail if saveas path is wrong.
                 self.doc.generate_tex(file.replace('.pdf',''))
@@ -132,7 +132,7 @@ class TabConverter():
                 pdf_latex.create_pdf(keep_pdf_file=True)
                 if self.generate_tex.get():#If not generating tex file then delete once we are done with it
                     os.remove(file.replace('.pdf','.tex'))
-                self.message_manager.set_message('File(s) saved. You may exit the application or continue generating files.',False,self.message_text)
+                self.message_manager.set_message("File(s) saved. You may exit the application or continue generating files.",False,self.message_text)
             except:
                 print(traceback.format_exc())
                 self.message_manager.clear_message()
@@ -159,7 +159,7 @@ class TabConverter():
             is_converting = True#We are no longer idle
         
             if 'tabs.ultimate-guitar.com' not in self.URL:#If not ultimate guitar website
-                messagebox.showinfo("Issue!","The URL must link to an Ultimate Guitar tab or chords page.")
+                messagebox.showinfo('Issue!',"The URL must link to an Ultimate Guitar tab or chords page.")
                 is_converting = False
                 return False
             

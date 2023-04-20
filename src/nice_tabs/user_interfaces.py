@@ -31,7 +31,7 @@ class GUI():
         self.window.tk.call('source', './Azure/azure.tcl')
         self.window.tk.call("set_theme", "dark")
         self.window.geometry('%dx%d+%d+%d' % (width, height, x, y))
-        self.window.title('Nice Tabs')
+        self.window.title("Nice Tabs")
         self.window.resizable(False,False)
 
         #right-click paste menu for entry
@@ -47,8 +47,8 @@ class GUI():
 
         #Instantiate elements
         greeting     = ttk.Label(text="Paste an ultimate guitar link in the box and hit \"Create\" to create and save a tab as a PDF.\n\n Example: https://tabs.ultimate-guitar.com/tab/darius-rucker/wagon-wheel-chords-1215756\n")
-        entry_button = ttk.Button(text="Create")
-        check        = ttk.Checkbutton(text='Generate .tex file',variable=self.generate_tex,onvalue=False,offvalue=True)
+        entry_button = ttk.Button(text='Create')
+        check        = ttk.Checkbutton(text="Generate .tex file",variable=self.generate_tex,onvalue=False,offvalue=True)
         self.entry   = ttk.Entry(width=80, textvariable=entryText)
 
         #Configure elements
