@@ -1,0 +1,10 @@
+name tex.windows
+category TLCore
+revision 65891
+shortdesc windows files of tex
+containersize 156612
+containerchecksum 35f6ca5219f512f3d56c1ee144f005adc0582479f7cd8d0b02e6cb1def274b40b40fa4c570023f71469a32d08048270eaafaac40891e2ea502578efc1f36eb90
+binfiles arch=windows size=86
+ bin/windows/initex.exe
+ bin/windows/tex.dll
+ bin/windows/tex.exe

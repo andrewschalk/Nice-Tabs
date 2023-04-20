@@ -1,0 +1,8 @@
+name bibtex.windows
+category Package
+revision 65891
+shortdesc windows files of bibtex
+containersize 49668
+containerchecksum 8cbea33c56170ea6639892e652891fd33242e83e7271092e4aee8264ca4a7234d5dce79d1b71e041bb1f43b4e1d8471ed438504e6a7fbc14d5a962c9c5d3c050
+binfiles arch=windows size=29
+ bin/windows/bibtex.exe

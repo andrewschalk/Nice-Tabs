@@ -1,0 +1,4 @@
+[Thu 04/20/2023 14:22:45.05] self update: texlive.infra (66512 -> 66822)
+[Thu Apr 20 14:23:04 2023] install: courier
+[Thu Apr 20 14:23:04 2023] command: mktexlsr
+[Thu Apr 20 14:23:04 2023] command: updmap-sys

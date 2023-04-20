@@ -1,0 +1,48 @@
+
+d:\ProgrammingProjects\Nice-Tabs\TinyTex\bin\windows>if [:doit] == [:doit] goto :doit 
+
+d:\ProgrammingProjects\Nice-Tabs\TinyTex\bin\windows>set prompt=TL$G 
+
+TL>title TeX Live Manager 2023 Update 
+
+TL>set PERL5LIB=d:/ProgrammingProjects/Nice-Tabs/TinyTex/tlpkg/tlperl/lib 
+
+TL>echo DO NOT CLOSE THIS WINDOW! 1>con 
+
+TL>echo TeX Live infrastructure update in progress ... 1>con 
+
+TL>echo Detailed command logging to "d:\ProgrammingProjects\Nice-Tabs\TinyTex\temp\update-self.log" 1>con 
+
+TL>pushd "d:\ProgrammingProjects\Nice-Tabs\TinyTex\temp\.." 
+
+TL>if not errorlevel 1 goto :update 
+
+TL>for %I in (texlive.infra.tar) do (
+temp\tar.exe -xmf temp\%I  
+ if errorlevel 1 goto :rollback 
+) 
+
+TL>(
+temp\tar.exe -xmf temp\texlive.infra.tar  
+ if errorlevel 1 goto :rollback 
+) 
+
+TL>tlpkg\tlperl\bin\perl.exe .\texmf-dist\scripts\texlive\tlmgr.pl _include_tlpobj tlpkg\tlpobj\texlive.infra.tlpobj 
+
+TL>if errorlevel 1 goto :rollback 
+
+TL>echo [Thu 04/20/2023 14:22:45.05] self update: texlive.infra (66512 -> 66822) 1>>"d:/ProgrammingProjects/Nice-Tabs/TinyTex/texmf-var/web2c/tlmgr.log" 
+
+TL>echo self update: texlive.infra (66512 -> 66822) 1>con 
+
+TL>del "d:\ProgrammingProjects\Nice-Tabs\TinyTex\temp\*.tar" "d:\ProgrammingProjects\Nice-Tabs\TinyTex\temp\tar.exe"  
+
+TL>echo Infrastructure update finished successfully. 1>con 
+
+TL>echo You may now close this window. 1>con 
+
+TL>rem  1>con 
+
+TL>popd
+
+TL>exit /b 0 

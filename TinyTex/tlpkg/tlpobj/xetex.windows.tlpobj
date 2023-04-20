@@ -1,0 +1,28 @@
+name xetex.windows
+category TLCore
+revision 66043
+shortdesc windows files of xetex
+containersize 10401316
+containerchecksum a47e8978c77770b510a57f74c0f11fe146f3a8b5da2cfb6dec8cdd60ab79990943ac0fb2a978274286b35186bd9877c6386e77753dedc460c5805dd6e6604272
+binfiles arch=windows size=11519
+ bin/windows/fc-cache.exe
+ bin/windows/fc-cat.exe
+ bin/windows/fc-list.exe
+ bin/windows/fc-match.exe
+ bin/windows/fc-pattern.exe
+ bin/windows/fc-query.exe
+ bin/windows/fc-scan.exe
+ bin/windows/fc-validate.exe
+ bin/windows/icudt72.dll
+ bin/windows/teckit_compile.exe
+ bin/windows/xelatex-unsafe.bat
+ bin/windows/xelatex-unsafe.exe
+ bin/windows/xelatex.exe
+ bin/windows/xetex-unsafe.bat
+ bin/windows/xetex-unsafe.exe
+ bin/windows/xetex.dll
+ bin/windows/xetex.exe
+ tlpkg/tlpostcode/xetex/cache/readme.txt
+ tlpkg/tlpostcode/xetex/conf/conf.d/51-local.conf
+ tlpkg/tlpostcode/xetex/conf/fonts.conf
+ tlpkg/tlpostcode/xetex/conf/fonts.dtd

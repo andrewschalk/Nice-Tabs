@@ -1,0 +1,11 @@
+name latex-bin.windows
+category TLCore
+revision 65891
+shortdesc windows files of latex-bin
+containersize 2560
+containerchecksum 117f39fc9434ede20150010c03fe512338f26e8ff969d0d5533f49eaed80aae1113554a7cdc4c82dd615460cfead5299d06a9bdb4f8c94f85a0c399b9d5efd5b
+binfiles arch=windows size=8
+ bin/windows/dvilualatex.exe
+ bin/windows/latex.exe
+ bin/windows/lualatex.exe
+ bin/windows/pdflatex.exe

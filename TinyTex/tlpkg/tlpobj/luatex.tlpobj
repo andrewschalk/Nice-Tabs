@@ -1,0 +1,36 @@
+name luatex
+category TLCore
+revision 66546
+shortdesc The LuaTeX engine
+longdesc LuaTeX is a greatly extended version of pdfTeX using Lua as an
+longdesc embedded scripting language. The LuaTeX project's main
+longdesc objective is to provide an open and configurable variant of TeX
+longdesc while at the same time offering substantive backward
+longdesc compatibility. LuaTeX uses Unicode (as UTF-8) as its default
+longdesc input encoding, and is able to use modern (OpenType and
+longdesc TrueType) fonts (for both text and mathematics).
+depend cm
+depend etex
+depend hyph-utf8
+depend hyphen-base
+depend knuth-lib
+depend luatex.ARCH
+depend plain
+depend tex-ini-files
+depend unicode-data
+execute AddFormat name=dviluatex engine=luatex options="dviluatex.ini"   patterns=language.def,language.dat.lua   fmttriggers=cm,etex,hyphen-base,knuth-lib,plain,tex-ini-files,unicode-data,hyph-utf8
+execute AddFormat name=luatex engine=luatex options="luatex.ini"   patterns=language.def,language.dat.lua   fmttriggers=cm,etex,hyphen-base,knuth-lib,plain,tex-ini-files,unicode-data,hyph-utf8
+containersize 13712
+containerchecksum 1d802e5ce39d2ceb6e6fcd159fddf57ee16d014ca9165b1e34e23d35943bb40fc795a112aa66af33a87019b74f71e3c4e24025af00823b1980d3a3b437c53aad
+doccontainersize 1950904
+doccontainerchecksum dc162ced7be4683e5d0596d200f4924e4feec0d06c253b95cb0dc62e3fc47e947749cbd322b2b71f1868d650ec82d15fb4fe9c2802d0c7faced76831c6134d49
+runfiles size=38
+ texmf-dist/tex/generic/config/luatex-unicode-letters.tex
+ texmf-dist/tex/generic/config/luatexiniconfig.tex
+ texmf-dist/web2c/texmfcnf.lua
+catalogue-contact-bugs https://mailman.ntg.nl/mailman/listinfo/dev-luatex
+catalogue-contact-home http://luatex.org
+catalogue-contact-repository https://tug.org/svn/texlive/trunk/Build/source/texk/web2c/luatexdir
+catalogue-contact-support https://lists.tug.org/luatex
+catalogue-license gpl2+
+catalogue-topics engine

@@ -1,0 +1,137 @@
+name courier
+category Package
+revision 61719
+catalogue urw-base35
+shortdesc URW 'Base 35' font pack for LaTeX
+longdesc A set of fonts for use as "drop-in" replacements for Adobe's
+longdesc basic set, comprising: Century Schoolbook (substituting for
+longdesc Adobe's New Century Schoolbook); Dingbats (substituting for
+longdesc Adobe's Zapf Dingbats); Nimbus Mono L (substituting for Abobe's
+longdesc Courier); Nimbus Roman No9 L (substituting for Adobe's Times);
+longdesc Nimbus Sans L (substituting for Adobe's Helvetica); Standard
+longdesc Symbols L (substituting for Adobe's Symbol); URW Bookman; URW
+longdesc Chancery L Medium Italic (substituting for Adobe's Zapf
+longdesc Chancery); URW Gothic L Book (substituting for Adobe's Avant
+longdesc Garde); and URW Palladio L (substituting for Adobe's Palatino).
+execute addMap ucr.map
+containersize 481072
+containerchecksum 30d6c8906671239b9ef04b3c4d571f59e928ffefc965cd592ecd3277062c778b6f8cb0782f5eb8c6bc27d03b69a88a120593477ced93bcc44cdd4fbc3e5b8adb
+runfiles size=291
+ texmf-dist/dvips/courier/config.ucr
+ texmf-dist/fonts/afm/adobe/courier/pcrb8a.afm
+ texmf-dist/fonts/afm/adobe/courier/pcrbo8a.afm
+ texmf-dist/fonts/afm/adobe/courier/pcrr8a.afm
+ texmf-dist/fonts/afm/adobe/courier/pcrro8a.afm
+ texmf-dist/fonts/afm/urw/courier/ucrb8a.afm
+ texmf-dist/fonts/afm/urw/courier/ucrbo8a.afm
+ texmf-dist/fonts/afm/urw/courier/ucrr8a.afm
+ texmf-dist/fonts/afm/urw/courier/ucrro8a.afm
+ texmf-dist/fonts/map/dvips/courier/ucr.map
+ texmf-dist/fonts/tfm/adobe/courier/pcrb.tfm
+ texmf-dist/fonts/tfm/adobe/courier/pcrb7t.tfm
+ texmf-dist/fonts/tfm/adobe/courier/pcrb8c.tfm
+ texmf-dist/fonts/tfm/adobe/courier/pcrb8r.tfm
+ texmf-dist/fonts/tfm/adobe/courier/pcrb8t.tfm
+ texmf-dist/fonts/tfm/adobe/courier/pcrbc.tfm
+ texmf-dist/fonts/tfm/adobe/courier/pcrbc7t.tfm
+ texmf-dist/fonts/tfm/adobe/courier/pcrbc8t.tfm
+ texmf-dist/fonts/tfm/adobe/courier/pcrbo.tfm
+ texmf-dist/fonts/tfm/adobe/courier/pcrbo7t.tfm
+ texmf-dist/fonts/tfm/adobe/courier/pcrbo8c.tfm
+ texmf-dist/fonts/tfm/adobe/courier/pcrbo8r.tfm
+ texmf-dist/fonts/tfm/adobe/courier/pcrbo8t.tfm
+ texmf-dist/fonts/tfm/adobe/courier/pcrr.tfm
+ texmf-dist/fonts/tfm/adobe/courier/pcrr7t.tfm
+ texmf-dist/fonts/tfm/adobe/courier/pcrr8c.tfm
+ texmf-dist/fonts/tfm/adobe/courier/pcrr8r.tfm
+ texmf-dist/fonts/tfm/adobe/courier/pcrr8t.tfm
+ texmf-dist/fonts/tfm/adobe/courier/pcrrc.tfm
+ texmf-dist/fonts/tfm/adobe/courier/pcrrc7t.tfm
+ texmf-dist/fonts/tfm/adobe/courier/pcrrc8t.tfm
+ texmf-dist/fonts/tfm/adobe/courier/pcrro.tfm
+ texmf-dist/fonts/tfm/adobe/courier/pcrro7t.tfm
+ texmf-dist/fonts/tfm/adobe/courier/pcrro8c.tfm
+ texmf-dist/fonts/tfm/adobe/courier/pcrro8r.tfm
+ texmf-dist/fonts/tfm/adobe/courier/pcrro8t.tfm
+ texmf-dist/fonts/tfm/urw35vf/courier/ucrb7t.tfm
+ texmf-dist/fonts/tfm/urw35vf/courier/ucrb8c.tfm
+ texmf-dist/fonts/tfm/urw35vf/courier/ucrb8r.tfm
+ texmf-dist/fonts/tfm/urw35vf/courier/ucrb8t.tfm
+ texmf-dist/fonts/tfm/urw35vf/courier/ucrbc7t.tfm
+ texmf-dist/fonts/tfm/urw35vf/courier/ucrbc8t.tfm
+ texmf-dist/fonts/tfm/urw35vf/courier/ucrbo7t.tfm
+ texmf-dist/fonts/tfm/urw35vf/courier/ucrbo8c.tfm
+ texmf-dist/fonts/tfm/urw35vf/courier/ucrbo8r.tfm
+ texmf-dist/fonts/tfm/urw35vf/courier/ucrbo8t.tfm
+ texmf-dist/fonts/tfm/urw35vf/courier/ucrr7t.tfm
+ texmf-dist/fonts/tfm/urw35vf/courier/ucrr8c.tfm
+ texmf-dist/fonts/tfm/urw35vf/courier/ucrr8r.tfm
+ texmf-dist/fonts/tfm/urw35vf/courier/ucrr8t.tfm
+ texmf-dist/fonts/tfm/urw35vf/courier/ucrrc7t.tfm
+ texmf-dist/fonts/tfm/urw35vf/courier/ucrrc8t.tfm
+ texmf-dist/fonts/tfm/urw35vf/courier/ucrro7t.tfm
+ texmf-dist/fonts/tfm/urw35vf/courier/ucrro8c.tfm
+ texmf-dist/fonts/tfm/urw35vf/courier/ucrro8r.tfm
+ texmf-dist/fonts/tfm/urw35vf/courier/ucrro8t.tfm
+ texmf-dist/fonts/type1/adobe/courier/pcrb8a.pfb
+ texmf-dist/fonts/type1/adobe/courier/pcrbi8a.pfb
+ texmf-dist/fonts/type1/adobe/courier/pcrbo8a.pfb
+ texmf-dist/fonts/type1/adobe/courier/pcri8a.pfb
+ texmf-dist/fonts/type1/adobe/courier/pcrr8a.pfb
+ texmf-dist/fonts/type1/adobe/courier/pcrro8a.pfb
+ texmf-dist/fonts/type1/urw/courier/ucrb8a.pfb
+ texmf-dist/fonts/type1/urw/courier/ucrb8a.pfm
+ texmf-dist/fonts/type1/urw/courier/ucrbo8a.pfb
+ texmf-dist/fonts/type1/urw/courier/ucrbo8a.pfm
+ texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb
+ texmf-dist/fonts/type1/urw/courier/ucrr8a.pfm
+ texmf-dist/fonts/type1/urw/courier/ucrro8a.pfb
+ texmf-dist/fonts/type1/urw/courier/ucrro8a.pfm
+ texmf-dist/fonts/vf/adobe/courier/pcrb.vf
+ texmf-dist/fonts/vf/adobe/courier/pcrb7t.vf
+ texmf-dist/fonts/vf/adobe/courier/pcrb8c.vf
+ texmf-dist/fonts/vf/adobe/courier/pcrb8t.vf
+ texmf-dist/fonts/vf/adobe/courier/pcrbc.vf
+ texmf-dist/fonts/vf/adobe/courier/pcrbc7t.vf
+ texmf-dist/fonts/vf/adobe/courier/pcrbc8t.vf
+ texmf-dist/fonts/vf/adobe/courier/pcrbo.vf
+ texmf-dist/fonts/vf/adobe/courier/pcrbo7t.vf
+ texmf-dist/fonts/vf/adobe/courier/pcrbo8c.vf
+ texmf-dist/fonts/vf/adobe/courier/pcrbo8t.vf
+ texmf-dist/fonts/vf/adobe/courier/pcrr.vf
+ texmf-dist/fonts/vf/adobe/courier/pcrr7t.vf
+ texmf-dist/fonts/vf/adobe/courier/pcrr8c.vf
+ texmf-dist/fonts/vf/adobe/courier/pcrr8t.vf
+ texmf-dist/fonts/vf/adobe/courier/pcrrc.vf
+ texmf-dist/fonts/vf/adobe/courier/pcrrc7t.vf
+ texmf-dist/fonts/vf/adobe/courier/pcrrc8t.vf
+ texmf-dist/fonts/vf/adobe/courier/pcrro.vf
+ texmf-dist/fonts/vf/adobe/courier/pcrro7t.vf
+ texmf-dist/fonts/vf/adobe/courier/pcrro8c.vf
+ texmf-dist/fonts/vf/adobe/courier/pcrro8t.vf
+ texmf-dist/fonts/vf/urw35vf/courier/ucrb7t.vf
+ texmf-dist/fonts/vf/urw35vf/courier/ucrb8c.vf
+ texmf-dist/fonts/vf/urw35vf/courier/ucrb8t.vf
+ texmf-dist/fonts/vf/urw35vf/courier/ucrbc7t.vf
+ texmf-dist/fonts/vf/urw35vf/courier/ucrbc8t.vf
+ texmf-dist/fonts/vf/urw35vf/courier/ucrbo7t.vf
+ texmf-dist/fonts/vf/urw35vf/courier/ucrbo8c.vf
+ texmf-dist/fonts/vf/urw35vf/courier/ucrbo8t.vf
+ texmf-dist/fonts/vf/urw35vf/courier/ucrr7t.vf
+ texmf-dist/fonts/vf/urw35vf/courier/ucrr8c.vf
+ texmf-dist/fonts/vf/urw35vf/courier/ucrr8t.vf
+ texmf-dist/fonts/vf/urw35vf/courier/ucrrc7t.vf
+ texmf-dist/fonts/vf/urw35vf/courier/ucrrc8t.vf
+ texmf-dist/fonts/vf/urw35vf/courier/ucrro7t.vf
+ texmf-dist/fonts/vf/urw35vf/courier/ucrro8c.vf
+ texmf-dist/fonts/vf/urw35vf/courier/ucrro8t.vf
+ texmf-dist/tex/latex/courier/8rucr.fd
+ texmf-dist/tex/latex/courier/omlucr.fd
+ texmf-dist/tex/latex/courier/omsucr.fd
+ texmf-dist/tex/latex/courier/ot1ucr.fd
+ texmf-dist/tex/latex/courier/t1ucr.fd
+ texmf-dist/tex/latex/courier/ts1ucr.fd
+catalogue-also tex-gyre
+catalogue-ctan /fonts/urw/base35
+catalogue-license gpl
+catalogue-topics font font-type1 font-collection

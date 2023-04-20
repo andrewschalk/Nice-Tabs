@@ -1,0 +1,726 @@
+=head2 Tue Jul 12 09:48:50 2022: C<Module> L<Math::Int64|Math::Int64>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 0.54>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Tue Jul 12 09:54:16 2022: C<Module> L<IO::String|IO::String>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 1.08>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Tue Jul 12 09:54:45 2022: C<Module> L<File::Which|File::Which>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 1.27>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Tue Jul 12 09:55:07 2022: C<Module> L<Digest::SHA|Digest::SHA>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 6.02>
+
+=item *
+
+C<EXE_FILES: shasum>
+
+=back
+
+=head2 Tue Jul 12 09:56:10 2022: C<Module> L<Encode::compat|Encode::compat>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 0.07>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Tue Jul 12 09:56:29 2022: C<Module> L<Encode::Locale|Encode::Locale>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 1.05>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Tue Jul 12 09:56:51 2022: C<Module> L<Win32::API|Win32::API>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 0.84>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Tue Jul 12 09:59:18 2022: C<Module> L<Win32API::Registry|Win32API::Registry>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 0.33>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Tue Jul 12 10:00:04 2022: C<Module> L<Win32::Console|Win32::Console>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 0.10>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Tue Jul 12 10:00:32 2022: C<Module> L<Win32::TieRegistry|Win32::TieRegistry>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 0.30>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Tue Jul 12 10:00:51 2022: C<Module> L<Win32::Shortcut|Win32::Shortcut>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 0.08>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Tue Jul 12 10:01:24 2022: C<Module> L<Date::Parse|Date::Parse>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 2.33>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Tue Jul 12 10:01:51 2022: C<Module> L<HTTP::Date|HTTP::Date>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 6.05>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Tue Jul 12 10:02:10 2022: C<Module> L<File::Listing|File::Listing>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 6.14>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Tue Jul 12 10:02:32 2022: C<Module> L<IO::HTML|IO::HTML>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 1.004>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Tue Jul 12 10:02:51 2022: C<Module> L<Try::Tiny|Try::Tiny>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 0.31>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Tue Jul 12 10:19:14 2022: C<Module> L<Test::Fatal|Test::Fatal>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 0.016>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Tue Jul 12 10:19:35 2022: C<Module> L<Test::Needs|Test::Needs>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 0.002009>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Tue Jul 12 10:19:51 2022: C<Module> L<LWP::MediaTypes|LWP::MediaTypes>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 6.04>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Tue Jul 12 10:20:09 2022: C<Module> L<URI|URI>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 5.10>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Tue Jul 12 10:20:26 2022: C<Module> L<HTTP::Message|HTTP::Message>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 6.36>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Tue Jul 12 10:20:44 2022: C<Module> L<HTML::Tagset|HTML::Tagset>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 3.20>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Tue Jul 12 10:21:26 2022: C<Module> L<HTML::Parser|HTML::Parser>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 3.76>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Tue Jul 12 10:21:50 2022: C<Module> L<WWW::RobotRules|WWW::RobotRules>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 6.02>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Tue Jul 12 10:22:07 2022: C<Module> L<HTTP::Negotiate|HTTP::Negotiate>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 6.01>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Tue Jul 12 10:22:31 2022: C<Module> L<Net::HTTP|Net::HTTP>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 6.22>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Tue Jul 12 10:22:48 2022: C<Module> L<Mozilla::CA|Mozilla::CA>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 20211001>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Tue Jul 12 10:23:15 2022: C<Module> L<HTTP::Daemon|HTTP::Daemon>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 6.14>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Tue Jul 12 10:44:24 2022: C<Module> L<HTTP::Cookies|HTTP::Cookies>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 6.10>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Tue Jul 12 10:44:56 2022: C<Module> L<Test::RequiresInternet|Test::RequiresInternet>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 0.05>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Tue Jul 12 10:45:58 2022: C<Module> L<libwww::perl|libwww::perl>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 6.61>
+
+=item *
+
+C<EXE_FILES: bin/lwp-download bin/lwp-dump bin/lwp-mirror bin/lwp-request>
+
+=back
+
+=head2 Tue Jul 12 10:46:22 2022: C<Module> L<Cpanel::JSON::XS|Cpanel::JSON::XS>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 4.27>
+
+=item *
+
+C<EXE_FILES: bin/cpanel_json_xs>
+
+=back
+
+=head2 Tue Jul 12 10:46:50 2022: C<Module> L<JSON::MaybeXS|JSON::MaybeXS>
+
+=over 4
+
+=item *
+
+C<installed into: E:\tlperl\site\lib>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 1.004003>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+

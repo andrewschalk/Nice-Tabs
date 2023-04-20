@@ -1,0 +1,66 @@
+[Thu Apr 20 14:23:04 2023] running mktexlsr
+[Thu Apr 20 14:23:04 2023] success, output:
+mktexlsr: Updating d:/ProgrammingProjects/Nice-Tabs/TinyTex/texmf-local/ls-R...
+mktexlsr: Updated d:/ProgrammingProjects/Nice-Tabs/TinyTex/texmf-local/ls-R.
+mktexlsr: Updating d:/ProgrammingProjects/Nice-Tabs/TinyTex/texmf-config/ls-R...
+mktexlsr: Updated d:/ProgrammingProjects/Nice-Tabs/TinyTex/texmf-config/ls-R.
+mktexlsr: Updating d:/ProgrammingProjects/Nice-Tabs/TinyTex/texmf-var/ls-R...
+mktexlsr: Updated d:/ProgrammingProjects/Nice-Tabs/TinyTex/texmf-var/ls-R.
+mktexlsr: Updating d:/ProgrammingProjects/Nice-Tabs/TinyTex/texmf-dist/ls-R...
+mktexlsr: Updated d:/ProgrammingProjects/Nice-Tabs/TinyTex/texmf-dist/ls-R.
+mktexlsr: Done.
+--end of output of mktexlsr.
+
+[Thu Apr 20 14:23:04 2023] running updmap-sys
+[Thu Apr 20 14:23:06 2023] success, output:
+updmap will read the following updmap.cfg files (in precedence order):
+  d:/programmingprojects/nice-tabs/tinytex/texmf-dist/web2c/updmap.cfg
+updmap may write changes to the following updmap.cfg file:
+  d:/programmingprojects/nice-tabs/tinytex/texmf-config/web2c/updmap.cfg
+dvips output dir: "d:/programmingprojects/nice-tabs/tinytex/texmf-var/fonts/map/dvips/updmap"
+pdftex output dir: "d:/programmingprojects/nice-tabs/tinytex/texmf-var/fonts/map/pdftex/updmap"
+dvipdfmx output dir: "d:/programmingprojects/nice-tabs/tinytex/texmf-var/fonts/map/dvipdfmx/updmap"
+
+updmap is creating new map files
+using the following configuration:
+  LW35 font names                  : URWkb (d:/programmingprojects/nice-tabs/tinytex/texmf-dist/web2c/updmap.cfg)
+  prefer outlines                  : true (d:/programmingprojects/nice-tabs/tinytex/texmf-dist/web2c/updmap.cfg)
+  texhash enabled                  : true
+  download standard fonts (dvips)  : true (d:/programmingprojects/nice-tabs/tinytex/texmf-dist/web2c/updmap.cfg)
+  download standard fonts (pdftex) : true (d:/programmingprojects/nice-tabs/tinytex/texmf-dist/web2c/updmap.cfg)
+  jaEmbed replacement string       : haranoaji (d:/programmingprojects/nice-tabs/tinytex/texmf-dist/web2c/updmap.cfg)
+  jaVariant replacement string     : -04 (d:/programmingprojects/nice-tabs/tinytex/texmf-dist/web2c/updmap.cfg)
+  scEmbed replacement string       : arphic (d:/programmingprojects/nice-tabs/tinytex/texmf-dist/web2c/updmap.cfg)
+  tcEmbed replacement string       : arphic (d:/programmingprojects/nice-tabs/tinytex/texmf-dist/web2c/updmap.cfg)
+  koEmbed replacement string       : baekmuk (d:/programmingprojects/nice-tabs/tinytex/texmf-dist/web2c/updmap.cfg)
+  create a mapfile for pxdvi       : false (default)
+
+Scanning for LW35 support files  [  3 files]
+Scanning for MixedMap entries    [  7 files]
+Scanning for KanjiMap entries    [  0 files]
+Scanning for Map entries         [ 14 files]
+
+Generating output for dvipdfmx...
+Generating output for ps2pk...
+Generating output for dvips...
+Generating output for pdftex...
+
+Files generated:
+  d:/programmingprojects/nice-tabs/tinytex/texmf-var/fonts/map/dvips/updmap:
+       16087 2023-04-20 14:23:05 builtin35.map
+       21561 2023-04-20 14:23:05 download35.map
+       88199 2023-04-20 14:23:06 psfonts_pk.map
+       94584 2023-04-20 14:23:06 psfonts_t1.map
+       94579 2023-04-20 14:23:05 ps2pk.map
+       94584 2023-04-20 14:23:06 psfonts.map = psfonts_t1.map
+  d:/programmingprojects/nice-tabs/tinytex/texmf-var/fonts/map/pdftex/updmap:
+       94586 2023-04-20 14:23:06 pdftex_dl14.map
+       92921 2023-04-20 14:23:06 pdftex_ndl14.map
+       94586 2023-04-20 14:23:06 pdftex.map = pdftex_dl14.map
+  d:/programmingprojects/nice-tabs/tinytex/texmf-var/fonts/map/dvipdfmx/updmap:
+         359 2023-04-20 14:23:05 kanjix.map
+
+Transcript written on: d:/programmingprojects/nice-tabs/tinytex/texmf-var/web2c/updmap.log
+updmap: updating ls-R files.
+--end of output of updmap-sys.
+
