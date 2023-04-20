@@ -2,7 +2,7 @@
 <p>
 <img alt="GitHub" src="https://img.shields.io/github/license/andrewschalk/Nice-Tabs"/>
   </p>
-A GUI based application that allows users to download Ultimate Guitar tabs and chords into a clean printable PDF.
+A GUI based application that allows users to download Ultimate Guitar tabs and chords into a clean printable PDF. Tested with Windows 10 but should work on most systems including Mac OS.
 
 ## Installation Instructions
 The runnable .exe is still a work in progress and is currently flagged as a virus by windows defender. To run the program you will need to first clone the repository in your favorite Python IDE and then follow these steps. Requires Python 3.
