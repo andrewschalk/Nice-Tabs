@@ -82,7 +82,7 @@ class TabConverter():
             return True
         except:
             self.message_manager.clear_message()
-            messagebox.showinfo('Issue!',"Something is wrong with the URL you entered. Please try again."+traceback.format_exc())
+            messagebox.showinfo('Issue!',"Something seems to be wrong with the URL you entered. Please try again.")
             return False
         
     def _process_HTML(self):
@@ -98,7 +98,7 @@ class TabConverter():
             artist     = soup.find('a',class_='aPPf7 fcGj5')
         except:
             self.message_manager.clear_message()
-            messagebox.showinfo('Issue!',"Something is wrong with the URL you entered. Please try again."+traceback.format_exc())
+            messagebox.showinfo('Issue!',"Something seems to be wrong with the URL you entered. Please try again.")
             return False
 
         cf.active = cf.Version1(indent=False)
@@ -116,7 +116,7 @@ class TabConverter():
             self.doc.append(NoEscape('\\begin{center}\\begin{large}'+self.title.replace('Chords','').replace('Tab','')+'\\end{large}\\\\by '+artist.text+'\\end{center}\\vspace{1em}'))
         except:
             self.message_manager.clear_message()
-            messagebox.showinfo('Issue!',"Something may be wrong with the URL you entered. Please try again.")
+            messagebox.showinfo('Issue!',"Something seems to be wrong with the URL you entered. Please try again.")
             return False
 
         for tab_line in tab_lines:
