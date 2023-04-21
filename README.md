@@ -5,7 +5,7 @@
 A GUI based application that allows users to download Ultimate Guitar tabs and chords into a clean printable PDF. Nice Tabs comes packaged with a compact version of LiveTeX so the user is not required to have a LaTeX compiler installed. This was just a program I made for myself but maybe someone else can get some use from it. No promises that it'll work without issue. If you notice anything wrong, please open an issue. Pull requests are appreciated.
 
 ### Installation Instructions
-Tested with Windows 10,11. Go to [Nice Tabs v0.4.1-alpha](https://github.com/andrewschalk/Nice-Tabs/releases/tag/v0.4.1-alpha) and download NiceTabs.exe. Windows may suggest the program is a virus, I can assure you it's not, just hit "more info" and "run anyway". Nice Tabs may take a long time to open as it unpacks temporary files, this is a work in progress.
+Tested with Windows 10,11. Go to [Nice Tabs v0.4.1-alpha](https://github.com/andrewschalk/Nice-Tabs/releases/tag/v0.4.1-alpha) and download NiceTabs.exe. Windows may suggest the program is a virus, I can assure you it's not, just hit "more info" and "run anyway". Depending on your system, Nice Tabs may take a long time to open as it unpacks temporary files, this is a work in progress.
 
 ### Developer Instructions
 Tested with Windows 10,11(should run on Mac OS or Linux distros if you simply change the web drivers in /src/nice_tabs/processes.py to whatever browser you have installed). To run the program you will need to first clone the repository in your favorite Python IDE and then follow these steps. Requires Python 3.
