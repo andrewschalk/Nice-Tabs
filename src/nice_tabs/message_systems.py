@@ -2,6 +2,10 @@ import time
 import threading
 from threading import Event
 
+"""
+    :Copyright (c) 2023 Andrew Schalk
+"""
+
 class MessageManager():
     """Manages the messages that are displayed to the user via GUI()."""
     

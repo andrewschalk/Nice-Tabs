@@ -12,6 +12,11 @@ from subprocess import CREATE_NO_WINDOW
 import traceback
 import os
 import pylatex.config as cf
+import requests
+
+"""
+    :Copyright (c) 2023 Andrew Schalk
+"""
 
 class TabConverter():
     """Retreives data from webpage and creates a PDF.
@@ -19,9 +24,10 @@ class TabConverter():
     The user can choose whether to keep the .tex file using a checkbox.
     The user is then prompted for where to save the file and the file is saved.
     """
-    global is_converting, has_webdrivers
-    is_converting  = False#False when application is idle, True when converting
-    has_webdrivers = False#Will be false until webdrivers have been downloaded
+    global is_converting, has_webdrivers, is_quiting_webdriver
+    is_converting        = False#False when application is idle, True when converting
+    has_webdrivers       = False#Will be false until webdrivers have been downloaded
+    is_quiting_webdriver = False#Will be True when quitting webdriver
 
     def __init__(self,message_manager):
         """
@@ -30,12 +36,18 @@ class TabConverter():
         self.message_manager = message_manager
 
     def initialize_web_driver(self):
+        """
+        This will download the webdriver for whatever version of Microsoft Edge the user has installed.
+        Here we use Edge as our browser because every Windows user should have this.
+        This should be called early in its own thread so that the drivers can be downloaded before they are needed.
+        has_webdrivers will be set to true once the drivers are finished downloading.
+        """
         global has_webdrivers
-        options = webdriver.EdgeOptions()
-        options.add_argument('--ignore-certificate-errors')#Don't show these errors as we don't care
-        options.add_argument('--ignore-ssl-errors')
-        options.add_argument('--headless=new')#Run in headless mode. '=new' fixes massive download time issue
-        options.add_argument('--window-size=1920,1200')
+        self.options = webdriver.EdgeOptions()
+        self.options.add_argument('--ignore-certificate-errors')#Don't show these errors as we don't care
+        self.options.add_argument('--ignore-ssl-errors')
+        self.options.add_argument('--headless=new')#Run in headless mode. '=new' fixes massive download time issue
+        self.options.add_argument('--window-size=1920,1200')
 
         #Don't download unnecessary GUI data
         prefs = {"profile.managed_default_content_settings.images":2,
@@ -48,25 +60,30 @@ class TabConverter():
          "profile.managed_default_content_settings.geolocation":2,
          "profile.managed_default_content_settings.media_stream":2,
         }
-        options.add_experimental_option('prefs', prefs)
-        options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        self.options.add_experimental_option('prefs', prefs)
+        self.options.add_experimental_option('excludeSwitches', ['enable-logging'])
 
         #The driver manager will download the necessary drivers for the version of Edge installed on the system.
-        edge_service = EdgeService(EdgeChromiumDriverManager().install())
-        edge_service.creation_flags = CREATE_NO_WINDOW
-        self.driver = webdriver.Edge(service=edge_service,options=options)
+        self.edge_service = EdgeService(EdgeChromiumDriverManager().install())
+        self.edge_service.creation_flags = CREATE_NO_WINDOW
+
         has_webdrivers = True
 
 
     def _get_website(self):
-        """Retreives the webpage from the given URL.
-        Here we use Microsoft Edge as our browser because every Windows user should have this.
-        """
-
-        self.message_manager.set_message('Downloading webpage',True,self.message_text)
-        self.driver.get(self.URL)
-        self.message_manager.clear_message()
-        return True
+        """Retreives the webpage from the given URL."""
+        try:
+            self.message_manager.set_message('Downloading webpage',True,self.message_text)
+            self.driver = webdriver.Edge(service=self.edge_service,options=self.options)
+            if requests.get(self.URL).status_code != requests.codes['ok']:
+                raise Exception
+            self.driver.get(self.URL)
+            self.message_manager.clear_message()
+            return True
+        except:
+            self.message_manager.clear_message()
+            messagebox.showinfo('Issue!',"Something is wrong with the URL you entered. Please try again.")
+            return False
         
     def _process_HTML(self):
         """Processes HTML page after we grab it from the website."""
@@ -143,11 +160,21 @@ class TabConverter():
         :param entry_text   (StringVar): The variable that holds the value in the entry field
         :param message_text (StringVar): The variable that holds the current user message.
         """
+
+        global is_converting,has_webdrivers,is_quiting_webdriver
+        saved = False
+
+        if is_quiting_webdriver:
+            self.message_manager.set_message("Quitting webdriver, please wait",True,self.message_text)
+            while is_quiting_webdriver:
+                pass
+            self.message_manager.clear_message()
+
+        if is_converting:
+            return
+
         self.URL          = entry_text.get()
         self.message_text = message_text
-        global is_converting,has_webdrivers
-        if is_converting:
-            return False
         
         self.generate_tex = generate_tex
         try:
@@ -168,16 +195,22 @@ class TabConverter():
                 return
             if not self._save_file():
                 return
-
-            is_converting = False#We're done converting; back to idle.
+            saved = True
             
         except:#If anything unexpected happens, throw error window with stacktrace
+            self.message_manager.clear_message()
             messagebox.showerror("Fatal Error!","Something went wrong!\n"+traceback.format_exc())
             print(traceback.format_exc())
-            self.message_manager.clear_message()
         finally:
             try:
+                is_quiting_webdriver = True
+                if not saved:
+                    self.message_manager.set_message("Restarting webdriver, please wait",True,self.message_text)
                 self.driver.quit()
             except:
                 pass
-            is_converting = False
+            finally:
+                self.message_manager.clear_message()
+                is_converting = False
+                is_quiting_webdriver = False
+

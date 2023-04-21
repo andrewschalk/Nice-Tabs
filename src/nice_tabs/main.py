@@ -8,7 +8,7 @@ from user_interfaces import GUI
     ~~~~~~~~~
     
 	This program allows the user to convert an Ultimate Guitar webpage containing a tab to a clean printable PDF.
-	Selenium scrapes the data from the given page and they are processed with Beautiful Soup.
+	Selenium scrapes the data from the given page using MS Edge and they are processed with Beautiful Soup.
 	The data are formatted with PyLaTeX and sent to a a version of LiveTeX which creates the PDF.
 	Utilizing the Azure dark theme for tkk, a simple GUI is implemented.
 

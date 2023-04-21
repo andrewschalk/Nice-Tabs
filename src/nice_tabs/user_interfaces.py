@@ -5,6 +5,9 @@ from tkinter import IntVar,ttk
 from tkinter import *
 from tkinter.ttk import *
 
+"""
+    :Copyright (c) 2023 Andrew Schalk
+"""
 
 class GUI():
     """ The graphical interface for NiceTabs. Uses the Azure dark theme for tkk."""
