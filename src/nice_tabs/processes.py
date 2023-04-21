@@ -165,7 +165,7 @@ class TabConverter():
         saved = False
 
         if is_quiting_webdriver:
-            self.message_manager.set_message("Quitting webdriver, please wait",True,self.message_text)
+            self.message_manager.set_message("Restarting webdriver, please wait",True,self.message_text)
             while is_quiting_webdriver:
                 pass
             self.message_manager.clear_message()
@@ -205,7 +205,7 @@ class TabConverter():
             try:
                 is_quiting_webdriver = True
                 if not saved:
-                    self.message_manager.set_message("Restarting webdriver, please wait",True,self.message_text)
+                    self.message_manager.set_message("Quiting webdriver, please wait",True,self.message_text)
                 self.driver.quit()
             except:
                 pass
