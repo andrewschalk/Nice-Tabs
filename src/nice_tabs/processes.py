@@ -82,7 +82,7 @@ class TabConverter():
             return True
         except:
             self.message_manager.clear_message()
-            messagebox.showinfo('Issue!',"Something is wrong with the URL you entered. Please try again.")
+            messagebox.showinfo('Issue!',"Something is wrong with the URL you entered. Please try again."+traceback.format_exc())
             return False
         
     def _process_HTML(self):
@@ -98,7 +98,7 @@ class TabConverter():
             artist     = soup.find('a',class_='aPPf7 fcGj5')
         except:
             self.message_manager.clear_message()
-            messagebox.showinfo('Issue!',"Something is wrong with the URL you entered. Please try again.")
+            messagebox.showinfo('Issue!',"Something is wrong with the URL you entered. Please try again."+traceback.format_exc())
             return False
 
         cf.active = cf.Version1(indent=False)
