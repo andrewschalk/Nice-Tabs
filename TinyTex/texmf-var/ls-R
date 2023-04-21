@@ -121,3 +121,6 @@ xelatex.fmt
 xetex.fmt
 
 ./xdvi:
+
+./fonts/tfm/jknappen/ec:
+ecrm1000.tfm

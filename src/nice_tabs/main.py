@@ -21,7 +21,7 @@ from user_interfaces import GUI
             \__/
 
 """
-os.chdir(sys._MEIPASS)#Uncomment for .exe deployment
+#os.chdir(sys._MEIPASS)#Uncomment for .exe deployment
 
 #This stuff catches anything meant for the terminal and stops it from crashing the exe
 buffer = io.StringIO()
