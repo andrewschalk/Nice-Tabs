@@ -15,7 +15,7 @@ class GUI():
         """
         #The width and height of the window.
         width  = 600
-        height = 257
+        height = 268
 
         self.window = tk.Tk()
 
@@ -42,7 +42,7 @@ class GUI():
         #Tkinter thread safe variables
         self.generate_tex = IntVar()
         message_text      = StringVar()
-        message_field     = ttk.Label(textvariable=message_text)
+        message_field     = ttk.Label(textvariable=message_text,justify=CENTER)
         entryText         = StringVar()
 
         #Instantiate elements

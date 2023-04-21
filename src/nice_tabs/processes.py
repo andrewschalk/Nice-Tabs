@@ -7,9 +7,7 @@ from tkinter import messagebox
 from selenium.webdriver.edge.service import Service as EdgeService
 from webdriver_manager.microsoft import EdgeChromiumDriverManager
 from tkinter.filedialog import asksaveasfilename
-from pdflatex import PDFLaTeX
 from subprocess import CREATE_NO_WINDOW
-import subprocess
 
 import traceback
 import os
@@ -129,7 +127,7 @@ class TabConverter():
         if file:#If user selected a file path
             try:#Will usually fail if LaTeX compiler failed. Could also fail if saveas path is wrong.
                 self.doc.generate_pdf(file.replace('.pdf',''),compiler='TinyTex\\bin\\windows\\pdflatex.exe',clean_tex=self.generate_tex)
-                self.message_manager.set_message("File(s) saved. You may exit the application or continue generating files.",False,self.message_text)
+                self.message_manager.set_message("File(s) saved to "+os.path.dirname(file)+"\nYou may exit the application or continue generating files.",False,self.message_text)
             except:
                 print(traceback.format_exc())
                 self.message_manager.clear_message()
@@ -163,6 +161,7 @@ class TabConverter():
                 self.message_manager.set_message("Finishing first time setup",True,self.message_text)
                 while not has_webdrivers:
                     pass
+            # These methods return false if they fail to execute
             if not self._get_website():
                 return
             if not self._process_HTML():
