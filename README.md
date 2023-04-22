@@ -8,7 +8,7 @@ A GUI based application that allows users to download Ultimate Guitar tabs and c
 Tested with Windows 10,11. Go to [Nice Tabs v0.4.2-alpha](https://github.com/andrewschalk/Nice-Tabs/releases/tag/v0.4.2-alpha) and download NiceTabs.exe.  Your browser or Windows may suggest the program is a virus, I can assure you it's not. You might not be able to run it directly from your browser after downloading. Depending on your system, Nice Tabs could take a long time to open while it unpacks temporary files, this is a work in progress.
 
 ### Usage
-Simply paste a Ultimate Guitar Tabs URL into the box and hit "create". You will be prompted where to save your PDF.
+Simply paste an Ultimate Guitar Tabs URL into the box and hit "create". You will be prompted where to save your PDF.
 
 If the "generate .tex" checkbox is selected, a .tex file of the same name as the PDF will be generated. This allows users with a LaTeX compiler to edit the output. (Note that the .tex file is not very human friendly)
 
