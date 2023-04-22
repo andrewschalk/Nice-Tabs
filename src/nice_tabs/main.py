@@ -23,7 +23,8 @@ from user_interfaces import GUI
 """
 #os.chdir(sys._MEIPASS)#Uncomment for .exe deployment
 
-#This stuff catches anything meant for the terminal and stops it from crashing the exe
+'''This stuff catches anything meant for the terminal and stops it from crashing the exe
+   It will need to be uncommented if anything is supposed to be output in the terminal.'''
 buffer = io.StringIO()
 sys.stdout = buffer
 sys.stderr = buffer

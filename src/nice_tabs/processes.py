@@ -131,6 +131,7 @@ class TabConverter():
                     if (tab_line.text.count(' ')>len(tab_line.text)/2) or len(tab_line.text)<5:# If this line is a "chord" line then give it some space above.
                         self.doc.append(NoEscape('\\par\\needspace{\\baselineskip}'))
                         self.doc.append(NoEscape('\\vspace{.6em}'))
+                        self.doc.append(NoEscape('\\leavevmode'))
 
                 #Replaces all special characters with their LaTeX display codes. Otherwise latex treats them as markup and not text.
                 self.doc.append(NoEscape(tab_line.text.replace('\\','\\textbackslash').replace(' ','\space ').replace('#','\\#').replace('_','\\_').replace('-','-{}')))
@@ -143,7 +144,7 @@ class TabConverter():
         self.message_manager.set_message("Saving file(s)",True,self.message_text)
         if file:#If user selected a file path
             try:#Will usually fail if LaTeX compiler failed. Could also fail if saveas path is wrong.
-                self.doc.generate_pdf(file.replace('.pdf',''),compiler='TinyTex\\bin\\windows\\pdflatex.exe',clean_tex=self.generate_tex)
+                self.doc.generate_pdf(file.replace('.pdf',''),compiler='TinyTex\\bin\\windows\\pdflatex.exe',clean_tex=self.generate_tex.get())
                 self.message_manager.set_message("File(s) saved to "+os.path.dirname(file)+"\nYou may exit the application or continue generating files.",False,self.message_text)
             except:
                 print(traceback.format_exc())
@@ -213,4 +214,3 @@ class TabConverter():
                 self.message_manager.clear_message()
                 is_converting = False
                 is_quiting_webdriver = False
-
