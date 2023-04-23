@@ -1,9 +1,9 @@
-import tkinter as tk
-import threading
-
 from tkinter import IntVar,ttk
 from tkinter import *
 from tkinter.ttk import *
+
+import tkinter as tk
+import threading
 
 """
     :Copyright (c) 2023 Andrew Schalk
@@ -18,7 +18,7 @@ class GUI():
         """
         #The width and height of the window.
         width  = 600
-        height = 268
+        height = 290
 
         self.window = tk.Tk()
 
@@ -65,9 +65,10 @@ class GUI():
         greeting.pack()
         self.entry.pack()
         ttk.Label().pack()
-        check.pack()
-        ttk.Label().pack()
         entry_button.pack()
+        ttk.Label().pack()
+        ttk.Label(text="Creation Options").pack()
+        check.pack()
         message_field.pack()
 
         self.window.mainloop()#Infinite loop to update elements

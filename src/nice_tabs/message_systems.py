@@ -1,7 +1,7 @@
-import time
-import threading
 from threading import Event
 
+import time
+import threading
 """
     :Copyright (c) 2023 Andrew Schalk
 """
