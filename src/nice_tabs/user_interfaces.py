@@ -16,6 +16,7 @@ class GUI():
         """
         :param tab_converter (TabConverter): The current instance of TabConverter
         """
+
         #The width and height of the window.
         width  = 600
         height = 290
@@ -67,7 +68,7 @@ class GUI():
         ttk.Label().pack()
         entry_button.pack()
         ttk.Label().pack()
-        ttk.Label(text="Creation Options").pack()
+        ttk.Label(text="Creation Options",).pack()
         check.pack()
         message_field.pack()
 

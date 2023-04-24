@@ -105,7 +105,10 @@ class TabConverter():
 
         self.doc = Document('basic')
 
-        self.doc.preamble.append(Package('geometry','margin=0.5in'))
+        if "Chords" in self.title:
+            self.doc.preamble.append(Package('geometry','margin=0.5in'))
+        else:#Tabs get a smaller margin because their lines are longer
+            self.doc.preamble.append(Package('geometry','margin=0.25in'))
         self.doc.preamble.append(NoEscape('\setlength{\parskip}{-.4em}'))
         self.doc.preamble.append(NoEscape('\pagenumbering{gobble}'))
         self.doc.preamble.append(Package('needspace'))
@@ -134,12 +137,17 @@ class TabConverter():
                         self.doc.append(NoEscape('\\leavevmode'))
 
                 #Replaces all special characters with their LaTeX display codes. Otherwise latex treats them as markup and not text.
-                self.doc.append(NoEscape(tab_line.text.replace('\\','\\textbackslash').replace(' ','\space ').replace('#','\\#').replace('_','\\_').replace('-','-{}').replace('&','\\&')))
+                special_characters = {'\\':'\\textbackslash',' ':'\space ','#':'\\#','_':'\\_','-':'-{}','&':'\\&','$':'\\$','^':'\\^'}
+                temp_text=tab_line.text
+                for charactor in special_characters:
+                    temp_text = temp_text.replace(charactor,special_characters[charactor])
+                self.doc.append(NoEscape(temp_text))
         self.message_manager.clear_message()
         return True
 
     def _save_file(self):
-        """Prompts the user where to save the file. Then saves the file."""
+        """Prompts the user where to save the file. Then saves the file.
+        """
         file = asksaveasfilename(defaultextension = '.pdf',initialfile=self.title,filetypes=[("PDF Doc", "*.pdf")])
         self.message_manager.set_message("Saving file(s)",True,self.message_text)
         if file:#If user selected a file path
